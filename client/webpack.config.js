@@ -2,9 +2,11 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  entry: './src/js/es6/app.js',
+  entry: [
+    './src/js/es6/index.js'
+  ],
   output: {
-    path: path.join(__dirname, 'src/js'),
+    path: path.join(__dirname, 'build/js'),
     filename: 'bundle.js'
   },
   module: {
@@ -15,6 +17,10 @@ module.exports = {
         query: {
           presets: 'es2015',
         },
+      },
+      {
+        loader: "style!css",
+        test: /\.css$/
       }
     ]
   },
