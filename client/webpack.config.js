@@ -22,7 +22,6 @@ module.exports = {
         loader: "style-loader!css-loader",
         test: /\.css$/
       },
-
       {
         loader: "file",
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/
@@ -42,8 +41,11 @@ module.exports = {
     ]
   },
   plugins: [
-    // Avoid publishing files when compilation fails
-    new webpack.NoErrorsPlugin()
+    new webpack.ProvidePlugin({
+      jQuery: 'jquery',
+      $: 'jquery',
+      jquery: 'jquery'
+    })
   ],
   stats: {
     // Nice colored output

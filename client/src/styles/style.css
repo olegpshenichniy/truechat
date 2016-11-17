@@ -1,0 +1,61 @@
+/***************/
+/*** sidebar ***/
+/***************/
+
+.thread-sidebar {
+    max-height: 600px;
+    overflow: scroll;
+}
+
+.thread-img {
+    height: 45px;
+    width: 45px;
+}
+
+/*************************/
+/*** message container ***/
+/*************************/
+
+.message-container {
+    max-height: 600px;
+    overflow: scroll;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.message-img {
+    height: 35px;
+    width: 35px;
+}
+
+/********************/
+/*** message form ***/
+/********************/
+
+.message-form {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.message-form .well {
+    background-color: #3e3e3e;
+}
+
+.message-form textarea {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: 120px;
+    min-height: 120px;
+    max-height: 120px;
+    resize: none;
+    background-color: #303030;
+    color: #0ce3ac;
+
+}
+
+.message-form textarea::selection {
+    background: #ff0000;
+}
+
+
