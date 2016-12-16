@@ -91,6 +91,20 @@ DATABASES = {
     }
 }
 
+# Store sessions in redis
+# https://github.com/martinrusev/django-redis-sessions
+
+SESSION_ENGINE = 'redis_sessions.session'
+
+# Redis settings
+# https://github.com/martinrusev/django-redis-sessions
+# http://redis.io/
+SESSION_REDIS_HOST = 'localhost'
+SESSION_REDIS_PORT = 6379
+SESSION_REDIS_DB = 0
+SESSION_REDIS_PASSWORD = None
+SESSION_REDIS_PREFIX = ''
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -140,8 +154,8 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.BasicAuthentication',
-        #   'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
 }
 
