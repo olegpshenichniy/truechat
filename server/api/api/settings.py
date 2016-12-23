@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     # internal apps
     'user',
+    'registration',
     # 'thread',
 
 ]
@@ -108,6 +109,17 @@ SESSION_REDIS_PASSWORD = None
 SESSION_REDIS_PREFIX = ''
 
 
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 1
+REDIS_PASSWORD = None
+REDIS_PREFIX = ''
+
+
+# Email backend
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -147,6 +159,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
+MEDIA_URL = '/media/'
+
+
 # Django REST framework
 # http://www.django-rest-framework.org/
 
@@ -159,6 +175,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework.filters.DjangoFilterBackend',
+    )
 }
 
 # JWT token
