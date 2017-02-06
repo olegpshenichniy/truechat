@@ -162,6 +162,9 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
 MEDIA_URL = '/media/'
 
+# Auth user model
+AUTH_USER_MODEL = 'user.User'
+
 
 # Django REST framework
 # http://www.django-rest-framework.org/

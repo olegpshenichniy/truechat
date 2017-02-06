@@ -67,3 +67,5 @@ ENV/
 *-compiled.js.map
 
 /client/src/js/bundle.js.map
+/server/api/MEDIA/
+/_playground/

@@ -7,12 +7,13 @@ import redis
 from captcha.image import ImageCaptcha
 
 from django.conf import settings
-from rest_framework.response import Response
+from rest_framework import status
 from rest_framework import permissions
+from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.status import HTTP_503_SERVICE_UNAVAILABLE
 
 from .serializers import CaptchaSerializer
+from .serializers import UserRegistrationSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -24,8 +25,12 @@ redis_cli = redis.Redis(connection_pool=pool)
 class RegistrationView(APIView):
     permission_classes = (permissions.AllowAny,)
 
-    def get(self, request, format=None):
-        return Response('register')
+    def post(self, request, format=None):
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetCaptchaView(APIView):
@@ -54,7 +59,7 @@ class GetCaptchaView(APIView):
 
         if not serializer.is_valid():
             logger.error('CaptchaSerializer is not valid. Errors: {}'.format(serializer.errors))
-            return Response(status=HTTP_503_SERVICE_UNAVAILABLE)
+            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         # add hash and secret_result to the redis storage
         redis_cli.set(name=serializer.validated_data['hash'], value=secret_result, ex=90)
