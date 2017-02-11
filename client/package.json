@@ -1,0 +1,37 @@
+{
+  "name": "truechat_client",
+  "version": "1.0.0",
+  "description": "truechat client application",
+  "main": "index.js",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "bootswatch": "^3.3.7",
+    "css-loader": "^0.25.0",
+    "file-loader": "^0.9.0",
+    "jquery": "^3.1.1",
+    "style-loader": "^0.13.1",
+    "underscore": "^1.8.3",
+    "url-loader": "^0.5.7"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.7",
+    "babel-preset-es2015": "^6.18.0",
+    "node-libs-browser": "^1.0.0",
+    "webpack": "^1.13.3"
+  },
+  "scripts": {
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olegpshenichniy/truechat.git"
+  },
+  "author": "Oleg Pshenichniy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/olegpshenichniy/truechat/issues"
+  },
+  "homepage": "https://github.com/olegpshenichniy/truechat#readme"
+}

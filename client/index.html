@@ -1,0 +1,61 @@
+<html lang="en">
+<head>
+  <title>TrueChat</title>
+  <link rel="shortcut icon" href="src/images/favicon.ico">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="live chat">
+  <meta name="author" content="Oleg Pshenichniy">
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  <script src="build/js/bundle.js"></script>
+</head>
+<body>
+<div class="container">
+  <!-- header -->
+  <div class="header clearfix">
+    <h3 class="text-muted">TRUECHAT</h3>
+  </div>
+  <div class="row">
+    <!--chat_sidebar-->
+    <div class="col-sm-4">
+      <div class="list-group thread-sidebar"></div>
+    </div>
+    <!--message_section-->
+    <div class="col-sm-8">
+      <div class="row">
+        <div class="list-group message-container col-sm-12"></div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 message-form">
+          <div class="well bs-component">
+            <form class="form-horizontal">
+              <fieldset>
+                <div class="form-group">
+                  <div class="col-lg-12">
+                    <textarea class="form-control" rows="3" id="textArea"></textarea>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-12">
+                    <button type="submit" class="btn btn-success pull-right">Send</button>
+                  </div>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="footer">
+    <p>© 2016 olegpshenichniy</p>
+  </footer>
+</div>
+</body>
+</html>
