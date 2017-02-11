@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # swagger API documentation tool
-    url(r'^api/docs$', get_swagger_view(title='Truechat API')),
+    url(r'^api/docs/$', get_swagger_view(title='Truechat API')),
 
     # obtaining/refresh a JWP token via a POST
     url(r'^api/token-get/', obtain_jwt_token),
@@ -20,6 +20,10 @@ urlpatterns = [
     # registration
     url(r'^api/registration/', include('registration.urls', namespace='api-registration')),
 
+    # mathcaptcha
+    url(r'^api/mathcaptcha/', include('mathcaptcha.urls', namespace='api-mathcaptcha')),
+
+    # user
     url(r'^api/', include('user.urls', namespace='api-user')),
 ]
 

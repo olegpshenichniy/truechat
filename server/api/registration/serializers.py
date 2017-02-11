@@ -5,20 +5,6 @@ from django.contrib.auth import password_validation
 from user.models import User
 
 
-class CaptchaSerializer(serializers.Serializer):
-    OPERATION_CHOICES = (
-        ('+', '+'),
-        ('-', '-'),
-        # ('/', '/'),
-        # ('*', '*'),
-    )
-
-    hash = serializers.CharField(max_length=100)
-    base64image = serializers.CharField(max_length=100000)
-    operation = serializers.ChoiceField(choices=OPERATION_CHOICES)
-    number = serializers.IntegerField()
-
-
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password_repeat = serializers.CharField(max_length=128, required=True, label='Repeat password')
 
