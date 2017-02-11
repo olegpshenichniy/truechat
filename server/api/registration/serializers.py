@@ -32,4 +32,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         del validated_data['password_repeat']
 
+        validated_data.update({'is_active': False})
+
         return User.objects.create_user(**validated_data)
