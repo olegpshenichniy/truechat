@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from django.core import exceptions
-from django.contrib.auth import password_validation
+from django.contrib.auth import password_validation, get_user_model
 
-from user.models import User
+
+User = get_user_model()
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
