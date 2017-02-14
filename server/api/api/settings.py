@@ -17,6 +17,11 @@ import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# basic settings
+PROTOCOL = 'http'
+DOMAIN = '127.0.0.1:8088'
+BASE_URL = '{}://{}'.format(PROTOCOL, DOMAIN)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
