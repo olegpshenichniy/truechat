@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     # internal apps
     'user',
+    'state',
     'mathcaptcha',
     'registration',
     # 'thread',

@@ -23,6 +23,9 @@ urlpatterns = [
     # mathcaptcha
     url(r'^api/mathcaptcha/', include('mathcaptcha.urls', namespace='api-mathcaptcha')),
 
+    # state
+    url(r'^api/state/', include('state.urls', namespace='api-state')),
+
     # user
     url(r'^api/', include('user.urls', namespace='api-user')),
 ]
