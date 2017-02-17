@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 3rd paty apps
+    'corsheaders',
     'rest_framework',
     'rest_framework_swagger',
     # internal apps
@@ -57,6 +58,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -171,6 +173,13 @@ MEDIA_URL = '/media/'
 
 # Auth user model
 AUTH_USER_MODEL = 'user.User'
+
+# CORS
+# https://github.com/OttoYiu/django-cors-headers
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1:8000',
+)
+CORS_ORIGIN_ALLOW_ALL = False
 
 
 # Django REST framework
