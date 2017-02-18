@@ -1,0 +1,10 @@
+.chat-error-global {
+    width: 300px;
+    height: 80px;
+    position: fixed;
+    z-index: 9999;
+    top: 50%;
+    left: 50%;
+    margin-left: -150px;
+    margin-top: -40px;
+}

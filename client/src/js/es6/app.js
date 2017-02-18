@@ -2,11 +2,13 @@
 
 import Auth from './auth.js'
 import Loader from './loader'
+import Error from './error'
 
 class App {
   constructor() {
     this.loader = new Loader();
     this.authorization = new Auth();
+    this.error = new Error();
   }
 
   run() {
@@ -19,16 +21,28 @@ class App {
       $this.loader.hideGlobal();
       setTimeout(function () {
         if (data === true) {
-          alert('authorized');
+          $this.runChat();
         } else {
-          alert('not authorized');
+          $this.showSignInSignUp();
         }
       }, 3000);
     }, function (err) {
       $this.loader.hideGlobal();
+
+      setTimeout(function () {
+        $this.error.showGlobal();
+      }, 3000);
+
       console.log('error', err);
     });
+  }
 
+  showSignInSignUp() {
+    alert('sign in sign up');
+  }
+
+  runChat() {
+    alert('chat');
   }
 }
 
