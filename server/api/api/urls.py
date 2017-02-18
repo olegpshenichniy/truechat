@@ -13,9 +13,9 @@ urlpatterns = [
     url(r'^api/docs/$', get_swagger_view(title='Truechat API')),
 
     # obtaining/refresh a JWP token via a POST
-    url(r'^api/token-get/', obtain_jwt_token),
-    url(r'^api/token-update/', refresh_jwt_token),
-    url(r'^api/token-verify/', verify_jwt_token),
+    url(r'^api/token/get/', obtain_jwt_token),
+    url(r'^api/token/update/', refresh_jwt_token),
+    url(r'^api/token/verify/', verify_jwt_token),
 
     # registration
     url(r'^api/registration/', include('registration.urls', namespace='api-registration')),

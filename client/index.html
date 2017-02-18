@@ -16,18 +16,24 @@
   <script src="build/js/bundle.js"></script>
 </head>
 <body>
+
 <div class="container">
+
   <!-- header -->
   <div class="header clearfix">
     <h3 class="text-muted">TRUECHAT</h3>
   </div>
-  <div class="row">
-    <!--chat_sidebar-->
-    <div class="col-sm-4">
+  <!-- end header -->
+
+  <div class="row" id="chat">
+    <!-- chat_sidebar -->
+    <div class="col-sm-4" id="chat-sidebar">
       <div class="list-group thread-sidebar"></div>
     </div>
-    <!--message_section-->
-    <div class="col-sm-8">
+    <!-- end chat_sidebar -->
+
+    <!-- message_section -->
+    <div class="col-sm-8"  id="chat-messages">
       <div class="row">
         <div class="list-group message-container col-sm-12"></div>
       </div>
@@ -52,10 +58,22 @@
         </div>
       </div>
     </div>
+    <!-- end message_section -->
   </div>
-  <footer class="footer">
-    <p>© 2016 olegpshenichniy</p>
-  </footer>
+
+  <!-- footer -->
+  <div class="navbar-fixed-bottom row-fluid">
+    <div class="navbar-inner">
+      <div class="container">
+        <p class="text-muted">© 2016 olegpshenichniy</p>
+      </div>
+    </div>
+  </div>
+  <!-- end footer -->
+
 </div>
+
+
+
 </body>
 </html>
