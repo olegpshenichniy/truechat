@@ -24,16 +24,23 @@ class Auth {
           // loading
         } else if (xhr.readyState === 4) {
           // done
-          let response = JSON.parse(xhr.responseText);
-
-          if ('is_anonymous' in response) {
-            if (response['is_anonymous'] !== true) {
-              // callback
-              resolve(true);
+          try {
+            let response = JSON.parse(xhr.responseText);
+            if ('is_anonymous' in response) {
+              if (response['is_anonymous'] !== true) {
+                // callback
+                resolve(true);
+              }
+            } else if ('detail' in response) {
+              if (xhr.status === 403) {
+                resolve(false);
+              }
             }
+            // errback
+            reject('Wrong response ' + JSON.stringify(response));
+          } catch (err) {
+            reject(err);
           }
-          // errback
-          reject('Wrong response ' + JSON.stringify(response));
         }
       };
       xhr.open('GET', SETTINGS.api.http.stateUrl);
