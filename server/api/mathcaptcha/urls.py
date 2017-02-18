@@ -1,8 +1,8 @@
 from django.conf.urls import url
 
-from .views import GetCaptchaView
+from .views import CaptchaView
 
 
 urlpatterns = [
-    url(r'^$', GetCaptchaView.as_view(), name='get-captcha'),
+    url(r'^$', CaptchaView.as_view(), name='get-validate'),
 ]

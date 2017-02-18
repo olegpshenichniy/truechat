@@ -21,7 +21,7 @@ pool = redis.ConnectionPool(host=settings.REDIS_HOST, port=settings.REDIS_PORT, 
 redis_cli = redis.Redis(connection_pool=pool)
 
 
-class GetCaptchaView(APIView):
+class CaptchaView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request, format=None):

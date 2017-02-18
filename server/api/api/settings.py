@@ -17,6 +17,11 @@ import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# basic settings
+PROTOCOL = 'http'
+DOMAIN = '127.0.0.1:8088'
+BASE_URL = '{}://{}'.format(PROTOCOL, DOMAIN)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -40,10 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 3rd paty apps
+    'corsheaders',
     'rest_framework',
     'rest_framework_swagger',
     # internal apps
     'user',
+    'state',
     'mathcaptcha',
     'registration',
     # 'thread',
@@ -51,6 +58,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -165,6 +173,13 @@ MEDIA_URL = '/media/'
 
 # Auth user model
 AUTH_USER_MODEL = 'user.User'
+
+# CORS
+# https://github.com/OttoYiu/django-cors-headers
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1:8000',
+)
+CORS_ORIGIN_ALLOW_ALL = False
 
 
 # Django REST framework
