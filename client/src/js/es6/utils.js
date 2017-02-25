@@ -2,7 +2,8 @@
 
 
 class Utils {
-  constructor() {
+  constructor(app) {
+    this.app = app;
   }
 
   static getCookie(name) {

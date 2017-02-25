@@ -5,6 +5,7 @@ import 'bootstrap/dist/js/bootstrap.min.js'
 import 'bootswatch/darkly/bootstrap.min.css'
 import '../../styles/loader.css'
 import '../../styles/error.css'
+import '../../styles/auth.css'
 import '../../styles/style.css'
 
 import App from './app'
