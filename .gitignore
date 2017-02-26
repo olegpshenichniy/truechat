@@ -70,3 +70,4 @@ ENV/
 /client/src/js/bundle.js.map
 /server/api/MEDIA/
 /_playground/
+/client/_index.html

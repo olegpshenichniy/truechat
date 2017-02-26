@@ -4,7 +4,8 @@ const SETTINGS = {
   api: {
     http: {
       baseUrl: httpApiHost,
-      stateUrl: httpApiHost + '/state/'
+      stateUrl: httpApiHost + '/state/',
+      tokenGetUrl: httpApiHost + '/token/get/'
     }
   }
 };

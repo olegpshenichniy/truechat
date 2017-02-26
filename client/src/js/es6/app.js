@@ -6,9 +6,11 @@ import Error from './error'
 
 class App {
   constructor() {
-    this.loader = new Loader();
-    this.authorization = new Auth();
-    this.error = new Error();
+    this._body = document.getElementsByTagName("BODY")[0];
+
+    this.loader = new Loader(this);
+    this.error = new Error(this);
+    this.auth = new Auth(this);
   }
 
   run() {
@@ -16,29 +18,32 @@ class App {
 
     $this.loader.showGlobal();
 
-    // check if client authorized
-    $this.authorization.isAuthorized().then(function (data) {
-      $this.loader.hideGlobal();
-      setTimeout(function () {
-        if (data === true) {
-          $this.runChat();
-        } else {
-          $this.showSignInSignUp();
-        }
-      }, 3000);
-    }, function (err) {
-      $this.loader.hideGlobal();
+    // IS AUTHORISED
+    $this.auth.isAuthorized().then(
+      function (data) {
+        $this.loader.hideGlobal();
+        setTimeout(function () {
+          if (data === true) {
+            $this.runChat();
+          } else {
+            // LOGIN || REGISTER
+            $this.login();
+          }
+        }, 3000);
+      },
+      function (err) {
+        $this.loader.hideGlobal();
 
-      setTimeout(function () {
-        $this.error.showGlobal();
-      }, 3000);
+        setTimeout(function () {
+          $this.error.showGlobal();
+        }, 3000);
 
-      console.log('error', err);
-    });
+        console.log('App.run.isAuthorized.errback >>> ', err);
+      });
   }
 
-  showSignInSignUp() {
-    alert('sign in sign up');
+  login() {
+    this.auth.showLoginForm();
   }
 
   runChat() {

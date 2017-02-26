@@ -4,7 +4,8 @@ import 'jquery'
 
 
 class Error {
-  constructor() {
+  constructor(app) {
+    this.app = app;
     this.globalClass = 'chat-error-global';
     this.templateGlobal = `<div class="chat-error-global">
                               <div class="alert alert-dismissible alert-danger">
@@ -16,7 +17,7 @@ class Error {
   }
 
   showGlobal() {
-    jQuery('body').append(this.templateGlobal);
+    jQuery(this.app._body).append(this.templateGlobal);
   }
 
   hideGlobal() {

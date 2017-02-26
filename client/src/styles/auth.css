@@ -1,0 +1,11 @@
+/*******************/
+/*** log in form ***/
+/*******************/
+#chat-login input {
+    background-color: #222222;
+    color: #0ce3ac;
+}
+
+#chat-login .chat-loader {
+    float: right !important;
+}
