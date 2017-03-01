@@ -2,14 +2,16 @@
 
 import Auth from './auth.js'
 import Loader from './loader'
-import Error from './error'
+import Alert from './alert'
 
 class App {
   constructor() {
     this._body = document.getElementsByTagName("BODY")[0];
+    this._token = null;
+    this._tokenCookieKey = 'jwttoken';
 
     this.loader = new Loader(this);
-    this.error = new Error(this);
+    this.alert = new Alert(this);
     this.auth = new Auth(this);
   }
 
@@ -35,7 +37,12 @@ class App {
         $this.loader.hideGlobal();
 
         setTimeout(function () {
-          $this.error.showGlobal();
+          $this.alert.show(
+            'app-run-isauthorized-errback-alert',
+            'danger',
+            $this._body,
+            `<strong>Crap!</strong>Server is off, try to reload page in couple of minutes.`
+          );
         }, 3000);
 
         console.log('App.run.isAuthorized.errback >>> ', err);

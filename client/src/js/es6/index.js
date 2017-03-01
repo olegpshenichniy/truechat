@@ -4,7 +4,7 @@ import 'jquery'
 import 'bootstrap/dist/js/bootstrap.min.js'
 import 'bootswatch/darkly/bootstrap.min.css'
 import '../../styles/loader.css'
-import '../../styles/error.css'
+import '../../styles/alert.css'
 import '../../styles/auth.css'
 import '../../styles/style.css'
 

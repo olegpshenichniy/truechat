@@ -8,8 +8,6 @@ import Utils from './utils'
 class Auth {
   constructor(app) {
     this.app = app;
-    this.token = null;
-    this.tokenCookieKey = 'jwttoken';
 
     this.templateLoginForm = `<div class="col-lg-4"></div>
                               <div class="col-lg-4">
@@ -41,10 +39,12 @@ class Auth {
   }
 
   setupToken() {
-    if (this.token !== null) {
-      this.token = Utils.getCookie(this.tokenCookieKey);
+    if (this.app._token === null) {
+      this.app._token = Utils.getCookie(this.app._tokenCookieKey);
+    } else {
+      Utils.setCookie(this.app._tokenCookieKey, this.app._token, 12);
     }
-    console.log('Auth.initToken token >>> ', this.token);
+    console.log('Auth.initToken token >>> ', this.app._token);
   }
 
   getToken(username, password) {
@@ -69,11 +69,7 @@ class Auth {
           // done
           try {
             let response = JSON.parse(xhr.responseText);
-
-            console.log('Auth.getToken response >>> ', response);
-
-            resolve(false);
-
+            resolve(response);
           } catch (err) {
             reject(err);
           }
@@ -123,20 +119,22 @@ class Auth {
       xhr.open('GET', SETTINGS.api.http.stateUrl);
 
       // set header
-      if (this.token) {
+      if (this.app._token) {
         xhr.withCredentials = false;
-        xhr.setRequestHeader('Authorization', 'JWT ' + this.token);
+        xhr.setRequestHeader('Authorization', 'JWT ' + this.app._token);
       }
       xhr.send();
     });
   }
 
   showLoginForm() {
-    // append html
-    jQuery(this.templateLoginForm).hide().appendTo(this.app._body).fadeIn();
-
     let $this = this;
-    let loginButton = jQuery('#chat-login-button');
+    let loginForm = jQuery(this.templateLoginForm);
+    let loginButton = null;
+
+    // append html
+    loginForm.hide().appendTo(this.app._body).fadeIn();
+    loginButton = jQuery('#chat-login-button');
 
     loginButton.click(function () {
       // hide button, show loader
@@ -153,19 +151,49 @@ class Auth {
       $this.getToken(formData.username, formData.password).then(
         function (data) {
           $this.app.loader.hideLocal('login', function () {
-            loginButton.show();
+            console.log('Auth.showLoginForm.getToken.callback >>> ', data);
+
+            // got token
+            if ('token' in data) {
+              // set token
+              $this.app._token = data['token'];
+
+              // validate it one more time
+              $this.isAuthorized().then(function (data) {
+                if (data === true) {
+                  $this.app.runChat();
+                } else {
+                  loginButton.show();
+                  $this.app.alert.show('auth-showloginform-gettoken-alert', 'danger', jQuery('form', loginForm),
+                    "Something died!"
+                  );
+                }
+              });
+
+            } else {
+              loginButton.show();
+
+              $this.app.alert.show( 'auth-showloginform-gettoken-alert', 'warning', jQuery('form', loginForm),
+                Utils.json2message(data)
+              );
+            }
           });
         },
         function (err) {
-          alert('fail');
           console.log('Auth.showLoginForm.getToken.errback >>> ', err);
 
           $this.app.loader.hideLocal('login', function () {
             loginButton.show();
+            $this.app.alert.show('auth-showloginform-gettoken-alert', 'danger', jQuery('form', loginForm),
+              "Something died!"
+            );
           });
-
         });
     });
+  }
+
+  showWarning() {
+
   }
 
 
