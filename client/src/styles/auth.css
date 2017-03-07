@@ -7,5 +7,6 @@
 }
 
 #chat-login .chat-loader {
-    float: right !important;
+    display: inline-block;
+    height: 25px;
 }

@@ -40,8 +40,9 @@ class Utils {
     _.each(Object.keys(json), function (value) {
       let li = jQuery('<li>');
       let innerUl = jQuery('<ul>');
+      let key = value.replace(/_/g, ' ');
 
-      li.text(value.replace(/_/g, ' '));
+      li.text(key.charAt(0).toUpperCase() + key.slice(1));
       li.append(innerUl);
 
       _.each(json[value], function (value) {

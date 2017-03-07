@@ -21,39 +21,36 @@ class App {
     $this.loader.showGlobal();
 
     // IS AUTHORISED
-    $this.auth.isAuthorized().then(
+    let authDeferred = $this.auth.isAuthorized();
+    authDeferred.then(
       function (data) {
-        $this.loader.hideGlobal();
+        $this.loader.removeGlobal();
         setTimeout(function () {
           if (data === true) {
-            $this.runChat();
+            // PROCEED TO CHAT
+            $this.chat();
           } else {
             // LOGIN || REGISTER
-            $this.login();
+            $this.loginForm();
           }
         }, 3000);
       },
       function (err) {
-        $this.loader.hideGlobal();
-
+        $this.loader.removeGlobal();
         setTimeout(function () {
           $this.alert.show(
-            'app-run-isauthorized-errback-alert',
-            'danger',
-            $this._body,
+            'app-run-isauthorized-errback-alert', 'danger', $this._body,
             `<strong>Crap!</strong>Server is off, try to reload page in couple of minutes.`
           );
         }, 3000);
-
-        console.log('App.run.isAuthorized.errback >>> ', err);
       });
   }
 
-  login() {
-    this.auth.showLoginForm();
+  loginForm() {
+    this.auth.loginForm();
   }
 
-  runChat() {
+  chat() {
     alert('chat');
   }
 }

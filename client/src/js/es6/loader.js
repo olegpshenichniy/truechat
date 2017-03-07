@@ -32,7 +32,7 @@ class Loader {
     }
   }
 
-  hideGlobal(callback = false) {
+  removeGlobal(callback = false) {
     jQuery('.' + this.globalClass).fadeOut(3000, function () {
       jQuery(this).remove();
     });
@@ -42,7 +42,7 @@ class Loader {
     }
   }
 
-  showLocal(key, container, callback = false) {
+  append(key, container, callback = false) {
     this._loaders[key] = jQuery(this.templateLocal);
     jQuery(container).append(this._loaders[key]);
 
@@ -51,8 +51,17 @@ class Loader {
     }
   }
 
-  hideLocal(key, callback = false) {
-    this._loaders[key].fadeOut(700, function () {
+  prepend(key, container, callback = false) {
+    this._loaders[key] = jQuery(this.templateLocal);
+    jQuery(container).prepend(this._loaders[key]);
+
+    if (callback) {
+      callback();
+    }
+  }
+
+  remove(key, callback = false) {
+    this._loaders[key].fadeOut(900, function () {
       jQuery(this).remove();
       if (callback) {
         callback();

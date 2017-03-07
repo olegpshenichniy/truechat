@@ -27,7 +27,8 @@ class Auth {
                                      </div>
                                      <div class="form-group">
                                        <div class="col-lg-12">
-                                         <button id="chat-login-button" type="button" class="btn btn-default pull-right">Go</button>
+                                         <button id="chat-login-button" type="button" class="btn btn-success">Go</button>
+                                         <button id="chat-register-button" type="button" class="btn btn-default">Register</button>
                                        </div>
                                      </div>
                                    </fieldset>
@@ -39,21 +40,19 @@ class Auth {
   }
 
   setupToken() {
-    if (this.app._token === null) {
+    if (!this.app._token) {
       this.app._token = Utils.getCookie(this.app._tokenCookieKey);
     } else {
       Utils.setCookie(this.app._tokenCookieKey, this.app._token, 12);
     }
-    console.log('Auth.initToken token >>> ', this.app._token);
   }
 
-  getToken(username, password) {
+  requestToken(username, password) {
     let xhr = new XMLHttpRequest();
     let params = jQuery.param({
       username: username,
       password: password
     });
-
 
     return new Promise((resolve, reject) => {
       xhr.onreadystatechange = function () {
@@ -83,7 +82,6 @@ class Auth {
 
   isAuthorized() {
     this.setupToken();
-
     let xhr = new XMLHttpRequest();
 
     return new Promise((resolve, reject) => {
@@ -101,8 +99,6 @@ class Auth {
           try {
             let response = JSON.parse(xhr.responseText);
 
-            console.log('Auth.isAuthorized response >>> ', response);
-
             if ('is_anonymous' in response) {
               resolve(!response['is_anonymous']);
             } else if ('detail' in response) {
@@ -117,7 +113,6 @@ class Auth {
         }
       };
       xhr.open('GET', SETTINGS.api.http.stateUrl);
-
       // set header
       if (this.app._token) {
         xhr.withCredentials = false;
@@ -127,19 +122,21 @@ class Auth {
     });
   }
 
-  showLoginForm() {
+  loginForm() {
     let $this = this;
     let loginForm = jQuery(this.templateLoginForm);
     let loginButton = null;
+    let registerButton = null;
 
     // append html
     loginForm.hide().appendTo(this.app._body).fadeIn();
     loginButton = jQuery('#chat-login-button');
+    registerButton = jQuery('#chat-register-button');
 
     loginButton.click(function () {
       // hide button, show loader
       loginButton.hide();
-      $this.app.loader.showLocal('login', loginButton.parent());
+      $this.app.loader.prepend('login', loginButton.parent());
 
       // form data
       let formData = jQuery('#chat-login').serializeArray().reduce(function (m, o) {
@@ -148,48 +145,41 @@ class Auth {
       }, {});
 
       // send xhr and handle deffered
-      $this.getToken(formData.username, formData.password).then(
+      $this.requestToken(formData.username, formData.password).then(
         function (data) {
-          $this.app.loader.hideLocal('login', function () {
-            console.log('Auth.showLoginForm.getToken.callback >>> ', data);
-
+          $this.app.loader.remove('login', function () {
             // got token
             if ('token' in data) {
-              // set token
               $this.app._token = data['token'];
-
               // validate it one more time
               $this.isAuthorized().then(function (data) {
                 if (data === true) {
-                  $this.app.runChat();
+                  $this.app.chat();
                 } else {
                   loginButton.show();
-                  $this.app.alert.show('auth-showloginform-gettoken-alert', 'danger', jQuery('form', loginForm),
-                    "Something died!"
-                  );
+                  $this.app.alert.show('auth.isauthorized', 'danger', jQuery('form', loginForm), "Something died!");
                 }
               });
-
-            } else {
+            }
+            else {
               loginButton.show();
-
-              $this.app.alert.show( 'auth-showloginform-gettoken-alert', 'warning', jQuery('form', loginForm),
-                Utils.json2message(data)
-              );
+              $this.app.alert.show( 'auth.requesttoken', 'warning', jQuery('form', loginForm), Utils.json2message(data));
             }
           });
         },
         function (err) {
-          console.log('Auth.showLoginForm.getToken.errback >>> ', err);
-
-          $this.app.loader.hideLocal('login', function () {
+          $this.app.loader.remove('login', function () {
             loginButton.show();
-            $this.app.alert.show('auth-showloginform-gettoken-alert', 'danger', jQuery('form', loginForm),
-              "Something died!"
-            );
+            $this.app.alert.show('auth.requesttoken', 'danger', jQuery('form', loginForm), "Something died!");
           });
         });
     });
+
+    registerButton.click($this.registerForm);
+  }
+
+  registerForm() {
+    alert('register');
   }
 
   showWarning() {
