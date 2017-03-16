@@ -87,6 +87,10 @@ class Auth {
   }
 
   show_loginForm() {
+    if (this._loginForm) {
+      return;
+    }
+
     let $this = this;
 
     $this._loginForm = jQuery(this.templateLoginForm);
