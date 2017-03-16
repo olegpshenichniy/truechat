@@ -25,7 +25,7 @@ class Loader {
   }
 
   showGlobal(callback = false) {
-    jQuery(this.app._body).append(this.templateGlobal);
+    jQuery(this.app.body).append(this.templateGlobal);
 
     if (callback) {
       callback();

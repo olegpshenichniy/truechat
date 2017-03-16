@@ -9,6 +9,10 @@ class Auth {
   constructor(app) {
     this.app = app;
 
+    this._loginForm = null;
+    this._loginButton = null;
+    this._registerButton = null;
+
     this.templateLoginForm = `<div class="col-lg-4"></div>
                               <div class="col-lg-4">
                                 <div class="well bs-component">
@@ -40,10 +44,10 @@ class Auth {
   }
 
   setupToken() {
-    if (!this.app._token) {
-      this.app._token = Utils.getCookie(this.app._tokenCookieKey);
+    if (!this.app.token) {
+      this.app.token = Utils.getCookie(this.app.tokenCookieKey);
     } else {
-      Utils.setCookie(this.app._tokenCookieKey, this.app._token, 12);
+      Utils.setCookie(this.app.tokenCookieKey, this.app.token, 12);
     }
   }
 
@@ -114,9 +118,9 @@ class Auth {
       };
       xhr.open('GET', SETTINGS.api.http.stateUrl);
       // set header
-      if (this.app._token) {
+      if (this.app.token) {
         xhr.withCredentials = false;
-        xhr.setRequestHeader('Authorization', 'JWT ' + this.app._token);
+        xhr.setRequestHeader('Authorization', 'JWT ' + this.app.token);
       }
       xhr.send();
     });
@@ -124,19 +128,16 @@ class Auth {
 
   loginForm() {
     let $this = this;
-    let loginForm = jQuery(this.templateLoginForm);
-    let loginButton = null;
-    let registerButton = null;
 
-    // append html
-    loginForm.hide().appendTo(this.app._body).fadeIn();
-    loginButton = jQuery('#chat-login-button');
-    registerButton = jQuery('#chat-register-button');
+    $this._loginForm = jQuery(this.templateLoginForm);
+    $this._loginForm.hide().appendTo(this.app.body).fadeIn();
+    $this._loginButton = jQuery('#chat-login-button');
+    $this._registerButton = jQuery('#chat-register-button');
 
-    loginButton.click(function () {
+    $this._loginButton.click(function () {
       // hide button, show loader
-      loginButton.hide();
-      $this.app.loader.prepend('login', loginButton.parent());
+      $this._loginButton.hide();
+      $this.app.loader.prepend('login', $this._loginButton.parent());
 
       // form data
       let formData = jQuery('#chat-login').serializeArray().reduce(function (m, o) {
@@ -150,41 +151,51 @@ class Auth {
           $this.app.loader.remove('login', function () {
             // got token
             if ('token' in data) {
-              $this.app._token = data['token'];
-              // validate it one more time
+              $this.app.token = data['token'];
+
               $this.isAuthorized().then(function (data) {
                 if (data === true) {
-                  $this.app.chat();
+                  $this.app._emitter.emit('auth.login.success', data)
                 } else {
-                  loginButton.show();
-                  $this.app.alert.show('auth.isauthorized', 'danger', jQuery('form', loginForm), "Something died!");
+                  $this._loginButton.show();
+                  $this.app.alert.show('auth-isauthorized', 'danger', jQuery('form', $this._loginForm), "Something died!");
                 }
               });
             }
+            // warnings
             else {
-              loginButton.show();
-              $this.app.alert.show( 'auth.requesttoken', 'warning', jQuery('form', loginForm), Utils.json2message(data));
+              $this._loginButton.show();
+              $this.app._emitter.emit('auth.login.fail', data);
+              $this.app.alert.show( 'auth-requesttoken', 'warning', jQuery('form', $this._loginForm), Utils.json2message(data));
             }
           });
         },
+        // error
         function (err) {
           $this.app.loader.remove('login', function () {
-            loginButton.show();
-            $this.app.alert.show('auth.requesttoken', 'danger', jQuery('form', loginForm), "Something died!");
+            $this._loginButton.show();
+            $this.app.alert.show('auth-requesttoken', 'danger', jQuery('form', $this._loginForm), "Something died!");
           });
         });
     });
 
-    registerButton.click($this.registerForm);
+    $this._registerButton.click($this.registerForm);
+  }
+
+  remove_LoginForm() {
+    if (this._loginForm) {
+      this._loginForm.remove();
+    }
+    this._loginForm = null;
+    this._loginButton = null;
+    this._registerButton = null;
   }
 
   registerForm() {
     alert('register');
   }
 
-  showWarning() {
-
-  }
+  remove_registerForm() {}
 
 
 }
