@@ -12,6 +12,7 @@ class Auth {
     this._loginForm = null;
     this._loginButton = null;
     this._registerButton = null;
+    this._logOutLink = jQuery('#auth-logout');
 
     this.templateLoginForm = `<div class="col-lg-4"></div>
                               <div class="col-lg-4">
@@ -43,49 +44,8 @@ class Auth {
 
   }
 
-  setupToken() {
-    if (!this.app.token) {
-      this.app.token = Utils.getCookie(this.app.tokenCookieKey);
-    } else {
-      Utils.setCookie(this.app.tokenCookieKey, this.app.token, 12);
-    }
-  }
-
-  requestToken(username, password) {
-    let xhr = new XMLHttpRequest();
-    let params = jQuery.param({
-      username: username,
-      password: password
-    });
-
-    return new Promise((resolve, reject) => {
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 0) {
-          // unsent
-        } else if (xhr.readyState === 1) {
-          // opened
-        } else if (xhr.readyState === 2) {
-          // headers_received
-        } else if (xhr.readyState === 3) {
-          // loading
-        } else if (xhr.readyState === 4) {
-          // done
-          try {
-            let response = JSON.parse(xhr.responseText);
-            resolve(response);
-          } catch (err) {
-            reject(err);
-          }
-        }
-      };
-      xhr.open('POST', SETTINGS.api.http.tokenGetUrl, true);
-      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xhr.send(params);
-    });
-  }
-
   isAuthorized() {
-    this.setupToken();
+    this._setupToken();
     let xhr = new XMLHttpRequest();
 
     return new Promise((resolve, reject) => {
@@ -126,7 +86,7 @@ class Auth {
     });
   }
 
-  loginForm() {
+  show_loginForm() {
     let $this = this;
 
     $this._loginForm = jQuery(this.templateLoginForm);
@@ -146,7 +106,7 @@ class Auth {
       }, {});
 
       // send xhr and handle deffered
-      $this.requestToken(formData.username, formData.password).then(
+      $this._requestToken(formData.username, formData.password).then(
         function (data) {
           $this.app.loader.remove('login', function () {
             // got token
@@ -179,10 +139,10 @@ class Auth {
         });
     });
 
-    $this._registerButton.click($this.registerForm);
+    $this._registerButton.click($this.show_registerForm);
   }
 
-  remove_LoginForm() {
+  remove_loginForm() {
     if (this._loginForm) {
       this._loginForm.remove();
     }
@@ -191,12 +151,70 @@ class Auth {
     this._registerButton = null;
   }
 
-  registerForm() {
+  show_logoutLink() {
+    let $this = this;
+
+    this._logOutLink.click(function () {
+      $this._logout();
+    });
+    this._logOutLink.show();
+  }
+
+  hide_logoutLink() {
+    this._logOutLink.hide();
+  }
+
+  show_registerForm() {
     alert('register');
   }
 
   remove_registerForm() {}
 
+  _setupToken() {
+    if (!this.app.token) {
+      this.app.token = Utils.getCookie(this.app.tokenCookieKey);
+    } else {
+      Utils.setCookie(this.app.tokenCookieKey, this.app.token, 12);
+    }
+  }
+
+  _requestToken(username, password) {
+    let xhr = new XMLHttpRequest();
+    let params = jQuery.param({
+      username: username,
+      password: password
+    });
+
+    return new Promise((resolve, reject) => {
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 0) {
+          // unsent
+        } else if (xhr.readyState === 1) {
+          // opened
+        } else if (xhr.readyState === 2) {
+          // headers_received
+        } else if (xhr.readyState === 3) {
+          // loading
+        } else if (xhr.readyState === 4) {
+          // done
+          try {
+            let response = JSON.parse(xhr.responseText);
+            resolve(response);
+          } catch (err) {
+            reject(err);
+          }
+        }
+      };
+      xhr.open('POST', SETTINGS.api.http.tokenGetUrl, true);
+      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xhr.send(params);
+    });
+  }
+
+  _logout() {
+    Utils.setCookie(this.app.tokenCookieKey, '', -1);
+    this.app._emitter.emit('auth.logout.success')
+  }
 
 }
 

@@ -20,6 +20,7 @@ class App {
   }
 
   run() {
+    this.auth.hide_logoutLink();
     this.loader.showGlobal();
     this._auth();
   }
@@ -30,11 +31,18 @@ class App {
 
     this._emitter.on('auth.login.success', function (data) {
       console.info('auth.login.success', data);
-      $this.auth.remove_LoginForm();
+      $this.auth.remove_loginForm();
+      $this.auth.show_logoutLink();
     });
 
     this._emitter.on('auth.login.fail', function (data) {
       console.info('auth.login.fail', data);
+    });
+
+    this._emitter.on('auth.logout.success', function () {
+      console.info('auth.logout.success');
+      $this.auth.hide_logoutLink();
+      $this.auth.show_loginForm();
     });
   }
 
@@ -48,6 +56,7 @@ class App {
         setTimeout(function () {
           if (data === true) {
             // chat
+            $this.auth.show_logoutLink();
             $this._chat();
           } else {
             // login || register
@@ -65,11 +74,10 @@ class App {
   }
 
   _loginForm() {
-    this.auth.loginForm();
+    this.auth.show_loginForm();
   }
 
   _chat() {
-    alert('chat');
   }
 }
 
