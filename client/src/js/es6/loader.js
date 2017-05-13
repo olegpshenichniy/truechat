@@ -35,11 +35,11 @@ class Loader {
   removeGlobal(callback = false) {
     jQuery('.' + this.globalClass).fadeOut(3000, function () {
       jQuery(this).remove();
-    });
 
-    if (callback) {
-      callback();
-    }
+      if (callback) {
+        callback();
+      }
+    });
   }
 
   append(key, container, callback = false) {
@@ -63,6 +63,7 @@ class Loader {
   remove(key, callback = false) {
     this._loaders[key].fadeOut(900, function () {
       jQuery(this).remove();
+
       if (callback) {
         callback();
       }

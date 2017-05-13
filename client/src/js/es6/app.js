@@ -1,28 +1,64 @@
 'use strict';
 
+import axios from 'axios'
 import Emitter from 'event-emitter-es6/dist/event-emitter.min.js'
 
+import SETTINGS from './settings'
 import Auth from './auth.js'
 import Loader from './loader'
 import Alert from './alert'
+import Utils from './utils'
+
 
 class App {
   constructor() {
+    // event emitter
     this._emitter = null;
+
+    // token
     this.token = null;
-    this.tokenCookieKey = 'jwttoken';
-    this.body = document.getElementsByTagName("BODY")[0];
+    this.tokenCookieKey = 'truechattoken';
+
     this.loader = new Loader(this);
     this.alert = new Alert(this);
     this.auth = new Auth(this);
 
-    this._subscribeOnEvents();
+    // body DOM
+    this.body = document.getElementsByTagName("BODY")[0];
+
+    // init axios instance
+    this.axios = axios.create({
+      baseURL: SETTINGS.api.http.baseUrl,
+      timeout: 3000
+    });
   }
 
   run() {
+    this._subscribeOnEvents();
+    this._setupToken();
     this.auth.hide_logoutLink();
     this.loader.showGlobal();
+    // main state
     this._auth();
+  }
+
+  _setupToken() {
+    let $this = this;
+
+    if (this.token) {
+      // setup/update cookie if token exists
+      Utils.setCookie($this.tokenCookieKey, $this.token, 12);
+    } else {
+      // try to get token from cookie mmm tasty
+      $this.token = Utils.getCookie($this.tokenCookieKey);
+    }
+
+    // if we have token let's alter defaults for axios header
+    if ($this.token) {
+      $this.token = Utils.getCookie($this.tokenCookieKey);
+      Object.assign(this.axios.defaults, {headers: {Authorization: 'JWT ' + this.token}});
+    }
+
   }
 
   _subscribeOnEvents() {
@@ -49,27 +85,23 @@ class App {
   _auth() {
     let $this = this;
 
-    $this.auth.isAuthorized().then(
-      function (data) {
-        $this.loader.removeGlobal();
-
-        setTimeout(function () {
-          if (data === true) {
+    $this.auth.isAnonymous().then(
+      function (isAnonymous) {
+        $this.loader.removeGlobal(function () {
+          if (isAnonymous === true) {
+            // login || register
+            $this._loginForm();
+          } else {
             // chat
             $this.auth.show_logoutLink();
             $this._chat();
-          } else {
-            // login || register
-            $this._loginForm();
           }
-        }, 3000);
+        });
       },
       function (err) {
-        $this.loader.removeGlobal();
-
-        setTimeout(function () {
+        $this.loader.removeGlobal(function () {
           $this.alert.show('app-server-off', 'danger', $this.body, `<strong>Crap!</strong>Server died, try later.`);
-        }, 3000);
+        });
       });
   }
 

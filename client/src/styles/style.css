@@ -11,7 +11,10 @@
 /*** nav bar ***/
 /***************/
 .navbar {
-    background-color: transparent;
+    background-color: #222222;
+}
+div.navbar-default .navbar-brand {
+    color: #777 !important;
 }
 
 /***************/
