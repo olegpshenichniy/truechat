@@ -83,46 +83,14 @@ class Auth {
 
   }
 
-  isAuthorized() {
-    this._setupToken();
-    let xhr = new XMLHttpRequest();
-
-    return new Promise((resolve, reject) => {
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 0) {
-          // unsent
-        } else if (xhr.readyState === 1) {
-          // opened
-        } else if (xhr.readyState === 2) {
-          // headers_received
-        } else if (xhr.readyState === 3) {
-          // loading
-        } else if (xhr.readyState === 4) {
-          // done
-          try {
-            let response = JSON.parse(xhr.responseText);
-
-            if ('is_anonymous' in response) {
-              resolve(!response['is_anonymous']);
-            } else if ('detail' in response) {
-              if (xhr.status === 403) {
-                resolve(false);
-              }
-            }
-            reject('Wrong response ' + JSON.stringify(response));
-          } catch (err) {
-            reject(err);
-          }
-        }
-      };
-      xhr.open('GET', SETTINGS.api.http.stateUrl);
-      // set header
-      if (this.app.token) {
-        xhr.withCredentials = false;
-        xhr.setRequestHeader('Authorization', 'JWT ' + this.app.token);
-      }
-      xhr.send();
-    });
+  isAnonymous() {
+    return this.app.axios.get(SETTINGS.api.http.stateEndpoint)
+      .then(function (response) {
+        return response.data.is_anonymous;
+      })
+      .catch(function (error) {
+        throw error;
+      });
   }
 
   show_loginForm() {
@@ -148,36 +116,25 @@ class Auth {
         return m;
       }, {});
 
+
+
       // send xhr and handle deffered
       $this._requestToken(formData.username, formData.password).then(
-        function (data) {
+        function (token) {
           $this.app.loader.remove('login', function () {
-            // got token
-            if ('token' in data) {
-              $this.app.token = data['token'];
-
-              $this.isAuthorized().then(function (data) {
-                if (data === true) {
-                  $this.app._emitter.emit('auth.login.success', data)
-                } else {
-                  $this._loginButton.show();
-                  $this.app.alert.show('auth-isauthorized', 'danger', jQuery('form', $this._loginForm), "Something died!");
-                }
-              });
-            }
-            // warnings
-            else {
-              $this._loginButton.show();
-              $this.app._emitter.emit('auth.login.fail', data);
-              $this.app.alert.show( 'auth-requesttoken', 'warning', jQuery('form', $this._loginForm), Utils.json2message(data));
-            }
+              $this.app.token = token;
+              $this.app._emitter.emit('auth.login.success', formData.username);
+              $this.app._setupToken();
           });
         },
         // error
-        function (err) {
+        function (error) {
           $this.app.loader.remove('login', function () {
             $this._loginButton.show();
-            $this.app.alert.show('auth-requesttoken', 'danger', jQuery('form', $this._loginForm), "Something died!");
+            $this.app._emitter.emit('auth.login.fail', error);
+            $this.app.alert.show('auth-requesttoken', 'warning', jQuery('form', $this._loginForm),
+              Utils.json2message(error.response.data)
+            );
           });
         });
     });
@@ -240,31 +197,18 @@ class Auth {
 
       // send xhr and handle deffered
       $this._register(formData.username, formData.email, formData.password, formData.password_repeat).then(
-        function (data) {
-
-          let respText = data.response;
-          let respStatus = data.status;
-
-          console.log(respStatus);
-
+        function (_) {
           $this.app.loader.remove('register', function () {
-            // created
-            if (respStatus === 201) {
-              alert('created');
-            }
-            // warnings
-            else {
-              $this._registerButton.show();
-              $this.app._emitter.emit('auth.register.fail', respText);
-              $this.app.alert.show( 'auth-register', 'warning', jQuery('form', $this._registerForm), Utils.json2message(respText));
-            }
+            alert('created');
           });
         },
         // error
-        function (err) {
+        function (error) {
           $this.app.loader.remove('register', function () {
             $this._registerButton.show();
-            $this.app.alert.show('auth-register', 'danger', jQuery('form', $this._registerForm), "Something died!");
+            $this.app._emitter.emit('auth.register.fail', error);
+            $this.app.alert.show('auth-register', 'warning', jQuery('form', $this._registerForm),
+              Utils.json2message(error.response.data));
           });
         });
     });
@@ -279,45 +223,26 @@ class Auth {
     this._registerForm = null;
   }
 
-  _setupToken() {
-    if (!this.app.token) {
-      this.app.token = Utils.getCookie(this.app.tokenCookieKey);
-    } else {
-      Utils.setCookie(this.app.tokenCookieKey, this.app.token, 12);
-    }
-  }
-
   _requestToken(username, password) {
-    let xhr = new XMLHttpRequest();
-    let params = jQuery.param({
-      username: username,
-      password: password
-    });
 
-    return new Promise((resolve, reject) => {
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 0) {
-          // unsent
-        } else if (xhr.readyState === 1) {
-          // opened
-        } else if (xhr.readyState === 2) {
-          // headers_received
-        } else if (xhr.readyState === 3) {
-          // loading
-        } else if (xhr.readyState === 4) {
-          // done
-          try {
-            let response = JSON.parse(xhr.responseText);
-            resolve(response);
-          } catch (err) {
-            reject(err);
-          }
+    let params = new URLSearchParams();
+    params.append('username', username);
+    params.append('password', password);
+
+    return this.app.axios.post(
+      SETTINGS.api.http.tokenGetEndpoint,
+      params)
+      .then(function (response) {
+        if ('token' in response.data) {
+          return response.data.token
         }
-      };
-      xhr.open('POST', SETTINGS.api.http.tokenGetUrl, true);
-      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xhr.send(params);
-    });
+        throw response;
+      })
+      .catch(function (error) {
+        console.log('catch', error.response);
+        throw error;
+      });
+
   }
 
   _logout() {
@@ -326,38 +251,26 @@ class Auth {
   }
 
   _register(username, email, password, passwordRepeat) {
-    let xhr = new XMLHttpRequest();
-    let params = jQuery.param({
-      username: username,
-      email: email,
-      password: password,
-      password_repeat: passwordRepeat
-    });
 
-    return new Promise((resolve, reject) => {
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 0) {
-          // unsent
-        } else if (xhr.readyState === 1) {
-          // opened
-        } else if (xhr.readyState === 2) {
-          // headers_received
-        } else if (xhr.readyState === 3) {
-          // loading
-        } else if (xhr.readyState === 4) {
-          // done
-          try {
-            let response = JSON.parse(xhr.responseText);
-            resolve({response: response, status: xhr.status});
-          } catch (err) {
-            reject(err);
-          }
+    let params = new URLSearchParams();
+    params.append('username', username);
+    params.append('password', password);
+    params.append('password_repeat', passwordRepeat);
+    params.append('email', email);
+
+    return this.app.axios.post(
+      SETTINGS.api.http.registrationEndpoint,
+      params)
+      .then(function (response) {
+        if (response.status === 201) {
+          return true;
         }
-      };
-      xhr.open('POST', SETTINGS.api.http.registrationUrl, true);
-      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xhr.send(params);
-    });
+        throw response;
+      })
+      .catch(function (error) {
+        console.log('catch', error.response);
+        throw error;
+      });
   }
 
 }
