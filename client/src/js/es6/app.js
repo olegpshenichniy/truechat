@@ -34,12 +34,12 @@ class App {
   }
 
   run() {
-    this._subscribeOnEvents();
-    this._setupToken();
-    this.auth.hide_logoutLink();
+    // this._subscribeOnEvents();
+    // this._setupToken();
+    // this.auth.hide_logoutLink();
     this.loader.showGlobal();
     // main state
-    this._auth();
+    // this._auth();
   }
 
   _setupToken() {
