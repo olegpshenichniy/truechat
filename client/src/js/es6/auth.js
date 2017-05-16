@@ -122,9 +122,9 @@ class Auth {
         function (token) {
           // hide button loader and execute callback
           $this.app.loader.stopAnimateButton('login', function () {
-              $this.app.token = token;
-              $this.app._setupToken();
-              $this.app._emitter.emit('auth.login.success', formData.username);
+            $this.app.token = token;
+            $this.app._setupToken();
+            $this.app._emitter.emit('auth.login.success', formData.username);
           });
         },
         // error
@@ -161,11 +161,11 @@ class Auth {
     this._logOutLink.click(function () {
       $this._logout();
     });
-    this._logOutLink.show();
+    this._logOutLink.removeClass('hide');
   }
 
   hide_logoutLink() {
-    this._logOutLink.hide();
+    this._logOutLink.addClass('hide');
   }
 
   show_registerForm() {
@@ -225,7 +225,6 @@ class Auth {
   }
 
   _requestToken(username, password) {
-
     let params = new URLSearchParams();
     params.append('username', username);
     params.append('password', password);

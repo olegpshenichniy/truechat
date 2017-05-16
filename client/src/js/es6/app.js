@@ -25,6 +25,7 @@ class App {
 
     // body DOM
     this.body = document.getElementsByTagName("BODY")[0];
+    this.chat_wrapper = document.getElementById("chat-wrapper");
 
     // init axios instance
     this.axios = axios.create({
@@ -66,8 +67,10 @@ class App {
 
     this._emitter.on('auth.login.success', function (data) {
       console.info('auth.login.success', data);
+
       $this.auth.remove_loginForm();
       $this.auth.show_logoutLink();
+      $this.show_chat();
     });
 
     this._emitter.on('auth.login.fail', function (data) {
@@ -76,6 +79,8 @@ class App {
 
     this._emitter.on('auth.logout.success', function () {
       console.info('auth.logout.success');
+
+      $this.hide_chat();
       $this.auth.hide_logoutLink();
       $this.auth.show_loginForm();
     });
@@ -89,11 +94,11 @@ class App {
         $this.loader.removeGlobalSphere(function () {
           if (isAnonymous === true) {
             // login || register
-            $this._loginForm();
+            $this.auth.show_loginForm();
           } else {
             // chat
-            //$this.auth.show_logoutLink();
-            $this._chat();
+            $this.auth.show_logoutLink();
+            $this.show_chat();
           }
         });
       },
@@ -104,12 +109,14 @@ class App {
       });
   }
 
-  _loginForm() {
-    this.auth.show_loginForm();
+  show_chat() {
+    jQuery(this.chat_wrapper).removeClass('hide').hide().fadeIn(1000);
   }
 
-  _chat() {
+  hide_chat() {
+    jQuery(this.chat_wrapper).addClass('hide');
   }
+
 }
 
 export {App as default}

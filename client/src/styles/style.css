@@ -1,17 +1,23 @@
 /************/
 /*** init ***/
 /************/
-body, .content-wrapper {
+.content-wrapper {
     background-color: #374850;
+}
+
+body {
+    background: url(
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAV0lEQVQoU2NU0jX6z0AEYERWKCotB9fy+ukjFO1whciKYCqQFYMVghSBBNFNhImDNKIoBAkgS2JViMs/MOsx3IjsBAw3wqxENxWnQphpyDRMM4rV+BQCAA5uRQvwMtvwAAAAAElFTkSuQmCC"
+    ) repeat;
 }
 
 /**************/
 /*** footer ***/
 /**************/
 .main-footer {
-  background: #222d32;
-  color: #b8c7ce;
-  border-top: 1px solid #1a2226;
+    background: #222d32;
+    color: #b8c7ce;
+    border-top: 1px solid #1a2226;
 }
 
 /*************/
@@ -20,30 +26,23 @@ body, .content-wrapper {
 .login-logo, .register-logo {
     color: #ffffff;
 }
-body.login-state {
-    background: url(
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAV0lEQVQoU2NU0jX6z0AEYERWKCotB9fy+ukjFO1whciKYCqQFYMVghSBBNFNhImDNKIoBAkgS2JViMs/MOsx3IjsBAw3wqxENxWnQphpyDRMM4rV+BQCAA5uRQvwMtvwAAAAAElFTkSuQmCC"
-    ) repeat;
-}
-
 
 /*!************!*/
 /*!*** init ***!*/
 /*!************!*/
 /*#chat-sidebar,*/
 /*#chat-messages {*/
-    /*display: none;*/
+/*display: none;*/
 /*}*/
-
 
 /*!***************!*/
 /*!*** nav bar ***!*/
 /*!***************!*/
 /*.navbar {*/
-    /*background-color: #222222;*/
+/*background-color: #222222;*/
 /*}*/
 /*div.navbar-default .navbar-brand {*/
-    /*color: #777 !important;*/
+/*color: #777 !important;*/
 /*}*/
 
 /*!***************!*/
@@ -51,13 +50,13 @@ body.login-state {
 /*!***************!*/
 
 /*.thread-sidebar {*/
-    /*max-height: 600px;*/
-    /*overflow: scroll;*/
+/*max-height: 600px;*/
+/*overflow: scroll;*/
 /*}*/
 
 /*.thread-img {*/
-    /*height: 45px;*/
-    /*width: 45px;*/
+/*height: 45px;*/
+/*width: 45px;*/
 /*}*/
 
 /*!*************************!*/
@@ -65,15 +64,15 @@ body.login-state {
 /*!*************************!*/
 
 /*.message-container {*/
-    /*max-height: 600px;*/
-    /*overflow: scroll;*/
-    /*padding-left: 0;*/
-    /*padding-right: 0;*/
+/*max-height: 600px;*/
+/*overflow: scroll;*/
+/*padding-left: 0;*/
+/*padding-right: 0;*/
 /*}*/
 
 /*.message-img {*/
-    /*height: 35px;*/
-    /*width: 35px;*/
+/*height: 35px;*/
+/*width: 35px;*/
 /*}*/
 
 /*!********************!*/
@@ -81,27 +80,27 @@ body.login-state {
 /*!********************!*/
 
 /*.message-form {*/
-    /*padding-left: 0;*/
-    /*padding-right: 0;*/
+/*padding-left: 0;*/
+/*padding-right: 0;*/
 /*}*/
 
 /*.message-form .well {*/
-    /*background-color: #3e3e3e;*/
+/*background-color: #3e3e3e;*/
 /*}*/
 
 /*.message-form textarea {*/
-    /*width: 100%;*/
-    /*min-width: 100%;*/
-    /*max-width: 100%;*/
-    /*height: 120px;*/
-    /*min-height: 120px;*/
-    /*max-height: 120px;*/
-    /*resize: none;*/
-    /*background-color: #303030;*/
-    /*color: #0ce3ac;*/
+/*width: 100%;*/
+/*min-width: 100%;*/
+/*max-width: 100%;*/
+/*height: 120px;*/
+/*min-height: 120px;*/
+/*max-height: 120px;*/
+/*resize: none;*/
+/*background-color: #303030;*/
+/*color: #0ce3ac;*/
 
 /*}*/
 
 /*.message-form textarea::selection {*/
-    /*background: #ff0000;*/
+/*background: #ff0000;*/
 /*}*/
