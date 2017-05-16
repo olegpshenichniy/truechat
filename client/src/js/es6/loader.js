@@ -1,6 +1,7 @@
 'use strict';
 
 import 'jquery'
+import Ladda from 'ladda'
 
 
 class Loader {
@@ -24,7 +25,7 @@ class Loader {
     this._loaders = {};
   }
 
-  showGlobal(callback = false) {
+  showGlobalSphere(callback = false) {
     jQuery(this.app.body).append(this.templateGlobal);
 
     if (callback) {
@@ -32,8 +33,8 @@ class Loader {
     }
   }
 
-  removeGlobal(callback = false) {
-    jQuery('.' + this.globalClass).fadeOut(3000, function () {
+  removeGlobalSphere(callback = false) {
+    jQuery('.' + this.globalClass).fadeOut(2000, function () {
       jQuery(this).remove();
 
       if (callback) {
@@ -42,8 +43,8 @@ class Loader {
     });
   }
 
-  append(key, container, callback = false) {
-    this._loaders[key] = jQuery(this.templateLocal);
+  appendSphere(key, container, callback = false) {
+    this._loaders['sphere-' + key] = jQuery(this.templateLocal);
     jQuery(container).append(this._loaders[key]);
 
     if (callback) {
@@ -51,8 +52,8 @@ class Loader {
     }
   }
 
-  prepend(key, container, callback = false) {
-    this._loaders[key] = jQuery(this.templateLocal);
+  prependSphere(key, container, callback = false) {
+    this._loaders['sphere-' + key] = jQuery(this.templateLocal);
     jQuery(container).prepend(this._loaders[key]);
 
     if (callback) {
@@ -60,8 +61,8 @@ class Loader {
     }
   }
 
-  remove(key, callback = false) {
-    this._loaders[key].fadeOut(900, function () {
+  removeSphere(key, callback = false) {
+    this._loaders['sphere-' + key].fadeOut(900, function () {
       jQuery(this).remove();
 
       if (callback) {
@@ -69,6 +70,27 @@ class Loader {
       }
     });
     delete this._loaders[key];
+  }
+
+  animateButton(key, button, callback = false) {
+    this._loaders['ladda-' + key] = Ladda.create(button);
+    this._loaders['ladda-' + key].start();
+
+    if (callback) {
+      callback();
+    }
+  }
+
+  stopAnimateButton(key, callback = false) {
+    let $this = this;
+    setTimeout(function () {
+      $this._loaders['ladda-' + key].stop();
+      delete $this._loaders['ladda-' + key];
+
+      if (callback) {
+        callback();
+      }
+    }, 200);
   }
 }
 

@@ -20,7 +20,7 @@ body, .content-wrapper {
 .login-logo, .register-logo {
     color: #ffffff;
 }
-body.login {
+body.login-state {
     background: url(
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAV0lEQVQoU2NU0jX6z0AEYERWKCotB9fy+ukjFO1whciKYCqQFYMVghSBBNFNhImDNKIoBAkgS2JViMs/MOsx3IjsBAw3wqxENxWnQphpyDRMM4rV+BQCAA5uRQvwMtvwAAAAAElFTkSuQmCC"
     ) repeat;

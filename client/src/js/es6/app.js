@@ -34,12 +34,11 @@ class App {
   }
 
   run() {
-    // this._subscribeOnEvents();
-    // this._setupToken();
-    // this.auth.hide_logoutLink();
-    this.loader.showGlobal();
+    this._subscribeOnEvents();
+    this._setupToken();
+    this.loader.showGlobalSphere();
     // main state
-    // this._auth();
+    this._auth();
   }
 
   _setupToken() {
@@ -87,19 +86,19 @@ class App {
 
     $this.auth.isAnonymous().then(
       function (isAnonymous) {
-        $this.loader.removeGlobal(function () {
+        $this.loader.removeGlobalSphere(function () {
           if (isAnonymous === true) {
             // login || register
             $this._loginForm();
           } else {
             // chat
-            $this.auth.show_logoutLink();
+            //$this.auth.show_logoutLink();
             $this._chat();
           }
         });
       },
       function (err) {
-        $this.loader.removeGlobal(function () {
+        $this.loader.removeGlobalSphere(function () {
           $this.alert.show('app-server-off', 'danger', $this.body, `<strong>Crap!</strong>Server died, try later.`);
         });
       });

@@ -1,6 +1,5 @@
 'use strict';
 
-import _ from 'underscore'
 import SETTINGS from './settings'
 import Utils from './utils'
 
@@ -15,33 +14,36 @@ class Auth {
     this._registerButton = null;
     this._logOutLink = jQuery('#auth-logout');
 
-    this.templateLoginForm = `<div class="col-lg-4"></div>
-                              <div class="col-lg-4">
-                                <div class="well bs-component">
-                                 <form class="form-horizontal" id="chat-login">
-                                   <fieldset>
-                                     <legend>Log In</legend>
-                                     <div class="form-group">
-                                       <div class="col-lg-12">
-                                         <input name="username" type="text" class="form-control" placeholder="Username">
-                                       </div>
-                                     </div>
-                                     <div class="form-group">
-                                       <div class="col-lg-12">
-                                         <input name="password" type="password" class="form-control" placeholder="Password">
-                                       </div>
-                                     </div>
-                                     <div class="form-group">
-                                       <div class="col-lg-12">
-                                         <button id="chat-login-button" type="button" class="btn btn-success">Go</button>
-                                         <button id="chat-register-button" type="button" class="btn btn-default">Register</button>
-                                       </div>
-                                     </div>
-                                   </fieldset>
-                                 </form>
+    this.templateLoginForm = `<div class="login-box">
+                                <div class="login-logo">
+                                  <b>TRUECHAT</b>
                                 </div>
-                              </div>
-                              <div class="col-lg-4"></div>`;
+                                <div class="login-box-body">
+                                  <p class="login-box-msg">Start your session</p>
+                                  <form id="chat-login">
+                                    <div class="form-group has-feedback">
+                                      <input name="username" type="text" class="form-control" placeholder="Username">
+                                      <span class="form-control-feedback"></span>
+                                    </div>
+                                    <div class="form-group has-feedback">
+                                      <input name="password" type="password" class="form-control" placeholder="Password">
+                                      <span class="form-control-feedback"></span>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-xs-6">
+                                        <button id="chat-register-button" type="button" class="btn btn-success btn-block btn-flat">
+                                          Register
+                                        </button>
+                                      </div>
+                                      <div class="col-xs-6">
+                                        <button id="chat-login-button" type="button" data-style="zoom-in" class="btn btn-success btn-block btn-flat ladda-button">
+                                          <span class="ladda-label">Sign In</span>
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>`;
 
     this.templateRegistrationForm = `<div class="col-lg-4"></div>
                                       <div class="col-lg-4">
@@ -105,10 +107,9 @@ class Auth {
     $this._loginButton = jQuery('#chat-login-button');
     $this._registerButton = jQuery('#chat-register-button');
 
-    $this._loginButton.click(function () {
-      // hide button, show loader
-      $this._loginButton.hide();
-      $this.app.loader.prepend('login', $this._loginButton.parent());
+    $this._loginButton.click(function (e) {
+      // show button loader
+      $this.app.loader.animateButton('login', this);
 
       // form data
       let formData = jQuery('#chat-login').serializeArray().reduce(function (m, o) {
@@ -116,22 +117,22 @@ class Auth {
         return m;
       }, {});
 
-
-
       // send xhr and handle deffered
       $this._requestToken(formData.username, formData.password).then(
         function (token) {
-          $this.app.loader.remove('login', function () {
+          // hide button loader and execute callback
+          $this.app.loader.stopAnimateButton('login', function () {
               $this.app.token = token;
-              $this.app._emitter.emit('auth.login.success', formData.username);
               $this.app._setupToken();
+              $this.app._emitter.emit('auth.login.success', formData.username);
           });
         },
         // error
         function (error) {
-          $this.app.loader.remove('login', function () {
-            $this._loginButton.show();
+          // hide button loader and execute callback
+          $this.app.loader.stopAnimateButton('login', function () {
             $this.app._emitter.emit('auth.login.fail', error);
+            // show warning message
             $this.app.alert.show('auth-requesttoken', 'warning', jQuery('form', $this._loginForm),
               Utils.json2message(error.response.data)
             );
