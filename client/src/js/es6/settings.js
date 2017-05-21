@@ -7,6 +7,7 @@ const SETTINGS = {
       baseUrl: httpApiHost,
       stateEndpoint: '/state/',
       tokenGetEndpoint: '/token/get/',
+      tokenVerifyEndpoint: '/token/verify/',
       registrationEndpoint: '/registration/',
     }
   }

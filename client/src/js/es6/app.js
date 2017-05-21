@@ -4,10 +4,11 @@ import axios from 'axios'
 import Emitter from 'event-emitter-es6/dist/event-emitter.min.js'
 
 import SETTINGS from './settings'
+import Token from './token.js'
 import Auth from './auth.js'
 import Loader from './loader'
 import Alert from './alert'
-import Utils from './utils'
+
 
 
 class App {
@@ -15,12 +16,9 @@ class App {
     // event emitter
     this._emitter = null;
 
-    // token
-    this.token = null;
-    this.tokenCookieKey = 'truechattoken';
-
     this.loader = new Loader(this);
     this.alert = new Alert(this);
+    this.token = new Token(this);
     this.auth = new Auth(this);
 
     // body DOM
@@ -35,30 +33,47 @@ class App {
   }
 
   run() {
-    this._subscribeOnEvents();
-    this._setupToken();
-    this.loader.showGlobalSphere();
-    // main state
-    this._auth();
-  }
-
-  _setupToken() {
     let $this = this;
 
-    if (this.token) {
-      // setup/update cookie if token exists
-      Utils.setCookie($this.tokenCookieKey, $this.token, 12);
+    // show big app loader
+    this.loader.showGlobalSphere();
+
+    // subscribe to all events
+    this._subscribeOnEvents();
+
+    // setup token if it exists in cookie
+    this.token.setup();
+
+    // verify token
+    if (this.token.secret) {
+      this.token.verify(this.token.secret).then(
+        function (isVerified) {
+          console.log('Is token verified:', isVerified);
+
+          $this.loader.removeGlobalSphere(function () {
+            if (isVerified) {
+              $this._setupAxiosHeaders();
+              // chat
+              $this.auth.show_logoutLink();
+              $this.show_chat();
+            } else {
+              $this.token.remove();
+              // login || register
+              $this.auth.show_loginForm();
+            }
+          });
+        },
+        function (err) {
+          $this.loader.removeGlobalSphere(function () {
+            $this.alert.show('app-server-off', 'danger', $this.body, `<strong>Crap!</strong>Server died, try later.`);
+          });
+        });
     } else {
-      // try to get token from cookie mmm tasty
-      $this.token = Utils.getCookie($this.tokenCookieKey);
+      // login || register
+      this.loader.removeGlobalSphere(function () {
+        $this.auth.show_loginForm();
+      });
     }
-
-    // if we have token let's alter defaults for axios header
-    if ($this.token) {
-      $this.token = Utils.getCookie($this.tokenCookieKey);
-      Object.assign(this.axios.defaults, {headers: {Authorization: 'JWT ' + this.token}});
-    }
-
   }
 
   _subscribeOnEvents() {
@@ -86,27 +101,12 @@ class App {
     });
   }
 
-  _auth() {
-    let $this = this;
-
-    $this.auth.isAnonymous().then(
-      function (isAnonymous) {
-        $this.loader.removeGlobalSphere(function () {
-          if (isAnonymous === true) {
-            // login || register
-            $this.auth.show_loginForm();
-          } else {
-            // chat
-            $this.auth.show_logoutLink();
-            $this.show_chat();
-          }
-        });
-      },
-      function (err) {
-        $this.loader.removeGlobalSphere(function () {
-          $this.alert.show('app-server-off', 'danger', $this.body, `<strong>Crap!</strong>Server died, try later.`);
-        });
-      });
+  _setupAxiosHeaders() {
+    // if we have token let's alter defaults for axios header
+    if (!this.token.secret) {
+      throw 'NullTokenError'
+    }
+    Object.assign(this.axios.defaults, {headers: {Authorization: 'JWT ' + this.token.secret}});
   }
 
   show_chat() {

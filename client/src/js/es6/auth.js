@@ -85,16 +85,6 @@ class Auth {
 
   }
 
-  isAnonymous() {
-    return this.app.axios.get(SETTINGS.api.http.stateEndpoint)
-      .then(function (response) {
-        return response.data.is_anonymous;
-      })
-      .catch(function (error) {
-        throw error;
-      });
-  }
-
   show_loginForm() {
     if (this._loginForm) {
       return;
@@ -118,12 +108,12 @@ class Auth {
       }, {});
 
       // send xhr and handle deffered
-      $this._requestToken(formData.username, formData.password).then(
+      $this.app.token.requestSecret(formData.username, formData.password).then(
         function (token) {
           // hide button loader and execute callback
           $this.app.loader.stopAnimateButton('login', function () {
-            $this.app.token = token;
-            $this.app._setupToken();
+            $this.app.token.secret = token;
+            $this.app.token.setup();
             $this.app._emitter.emit('auth.login.success', formData.username);
           });
         },
@@ -224,29 +214,8 @@ class Auth {
     this._registerForm = null;
   }
 
-  _requestToken(username, password) {
-    let params = new URLSearchParams();
-    params.append('username', username);
-    params.append('password', password);
-
-    return this.app.axios.post(
-      SETTINGS.api.http.tokenGetEndpoint,
-      params)
-      .then(function (response) {
-        if ('token' in response.data) {
-          return response.data.token
-        }
-        throw response;
-      })
-      .catch(function (error) {
-        console.log('catch', error.response);
-        throw error;
-      });
-
-  }
-
   _logout() {
-    Utils.setCookie(this.app.tokenCookieKey, '', -1);
+    this.app.token.remove();
     this.app._emitter.emit('auth.logout.success')
   }
 
