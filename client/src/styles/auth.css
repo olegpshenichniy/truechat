@@ -1,12 +1,6 @@
 /**************************/
 /*** log/register forms ***/
 /**************************/
-#chat-login input,
-#chat-register input {
-    background-color: #222222;
-    color: #0ce3ac;
-}
-
 #chat-login .chat-loader,
 #chat-register .chat-loader {
     display: inline-block;

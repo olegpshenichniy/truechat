@@ -4,13 +4,16 @@
   "description": "truechat client application",
   "main": "index.js",
   "dependencies": {
+    "admin-lte": "^2.3.11",
     "axios": "^0.16.1",
     "bootstrap": "^3.3.7",
-    "bootswatch": "^3.3.7",
     "css-loader": "^0.25.0",
     "event-emitter-es6": "^1.1.5",
     "file-loader": "^0.9.0",
     "jquery": "^3.1.1",
+    "jquery-ui": "^1.12.1",
+    "ladda": "^1.0.0",
+    "rangy": "^1.3.0",
     "style-loader": "^0.13.1",
     "underscore": "^1.8.3",
     "url-loader": "^0.5.7"
@@ -20,6 +23,7 @@
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.7",
     "babel-preset-es2015": "^6.18.0",
+    "image-webpack-loader": "^3.3.1",
     "node-libs-browser": "^1.0.0",
     "webpack": "^1.13.3"
   },
