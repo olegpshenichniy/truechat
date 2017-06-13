@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import GroupThread, PrivateThread
+
+admin.site.register(GroupThread)
+admin.site.register(PrivateThread)
