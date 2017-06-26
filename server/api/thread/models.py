@@ -18,7 +18,7 @@ class AbstractThread(models.Model):
 
 class PrivateThread(AbstractThread):
     """
-    Private message between 2 users.
+    Private messages thread between 2 users.
     """
     initiator = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   related_name='inited_private_threads',

@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import PrivateMessage, GroupMessage
+
+
+admin.site.register(PrivateMessage)
+admin.site.register(GroupMessage)
