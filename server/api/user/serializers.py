@@ -40,7 +40,13 @@ class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
         profile_validated_data = validated_data.pop('profile', None)
 
         if profile_validated_data:
-            profile = instance.profile
+
+            try:
+                profile = instance.profile
+            except Profile.DoesNotExist:
+                profile = Profile()
+                profile.user = instance
+                profile.save()
 
             profile.avatar = profile_validated_data.get(
                 'avatar',

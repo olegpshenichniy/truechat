@@ -18,7 +18,7 @@ class UserRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = UserRetrieveUpdateSerializer
 
     def update(self, request, *args, **kwargs):
-        # only owner can delete
+        # only owner can update
         if request.user != self.get_object():
             raise PermissionDenied()
 

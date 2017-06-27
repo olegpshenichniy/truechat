@@ -36,7 +36,7 @@ class GroupThread(AbstractThread):
     Group thread.
     """
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='owned_group_threads')
-    name = models.CharField(max_length=30, null=True, blank=True)
+    name = models.CharField(max_length=30, default='Group chat')
 
     def __str__(self):
         return '{}:"{}": {}'.format(
