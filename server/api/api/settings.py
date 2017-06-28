@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'state',
     'mathcaptcha',
     'registration',
-    # 'thread',
+    'thread',
+    'message'
 
 ]
 
