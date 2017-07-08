@@ -1,7 +1,5 @@
 from rest_framework import generics
-from rest_framework.exceptions import PermissionDenied, APIException, ParseError, NotFound
-
-from django.conf import settings
+from rest_framework.exceptions import PermissionDenied
 
 from .models import PrivateThread, GroupThread
 from .serializers import PrivateThreadListCreateSerializer, PrivateThreadRetrieveDestroySerializer
