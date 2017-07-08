@@ -33,10 +33,19 @@ urlpatterns = [
     # user
     url(r'^api/users/', include('user.urls', namespace='api-user')),
 
-    # thread
+    # threads
     url(r'^api/threads/', include('thread.urls', namespace='api-thread')),
+
+    # messages
+    url(r'^api/messages/', include('message.urls', namespace='api-message')),
 ]
 
 # during development serve media by django
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    import debug_toolbar
+
+    urlpatterns = [
+                      url(r'^__debug__/', include(debug_toolbar.urls)),
+                  ] + urlpatterns
