@@ -11,14 +11,21 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserListSerializer(serializers.ModelSerializer):
     profile_avatar = serializers.SerializerMethodField()
+    profile_avatar_thumbnail = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'profile_avatar')
+        fields = ('id', 'username', 'first_name', 'last_name', 'profile_avatar', 'profile_avatar_thumbnail')
 
     def get_profile_avatar(self, obj):
         try:
             return obj.profile.avatar_url
+        except Profile.DoesNotExist as e:
+            return None
+
+    def get_profile_avatar_thumbnail(self, obj):
+        try:
+            return obj.profile.avatar_url_thumbnail
         except Profile.DoesNotExist as e:
             return None
 

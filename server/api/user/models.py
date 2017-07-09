@@ -1,3 +1,6 @@
+import os
+from PIL import Image, ImageOps
+
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -20,3 +23,30 @@ class Profile(models.Model):
     def avatar_url(self):
         return '{}{}{}'.format(settings.BASE_URL, settings.MEDIA_URL, self.avatar)
 
+    @property
+    def avatar_url_thumbnail(self):
+        thumbnails_dir = self.avatar_thumbnail_dir
+        thumbnail_file_path = self.avatar_thumbnail_file_path
+
+        if not os.path.exists(thumbnails_dir):
+            os.makedirs(thumbnails_dir)
+
+        if not os.path.exists(thumbnail_file_path):
+            image = Image.open(self.avatar)
+            thumbnail = ImageOps.fit(image, (100, 100), Image.ANTIALIAS)
+            thumbnail.save(thumbnail_file_path)
+
+        return '{}{}user/profile/avatar/thumbs/{}'.format(
+            settings.BASE_URL,
+            settings.MEDIA_URL,
+            os.path.basename(thumbnail_file_path)
+        )
+
+    @property
+    def avatar_thumbnail_dir(self):
+        return os.path.join(settings.MEDIA_ROOT, os.path.dirname(str(self.avatar)), 'thumbs')
+
+    @property
+    def avatar_thumbnail_file_path(self):
+        thumbnail_file_name = '100x100_thumb_{}'.format(os.path.basename(str(self.avatar)))
+        return os.path.join(self.avatar_thumbnail_dir, thumbnail_file_name)
