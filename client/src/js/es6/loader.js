@@ -45,7 +45,7 @@ class Loader {
 
   appendSphere(key, container, callback = false) {
     this._loaders['sphere-' + key] = jQuery(this.templateLocal);
-    jQuery(container).append(this._loaders[key]);
+    container.append(this._loaders['sphere-' + key]);
 
     if (callback) {
       callback();
@@ -54,7 +54,7 @@ class Loader {
 
   prependSphere(key, container, callback = false) {
     this._loaders['sphere-' + key] = jQuery(this.templateLocal);
-    jQuery(container).prepend(this._loaders[key]);
+    container.prepend(this._loaders['sphere-' + key]);
 
     if (callback) {
       callback();

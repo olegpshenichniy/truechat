@@ -71,3 +71,4 @@ ENV/
 /server/api/MEDIA/
 /_playground/
 /client/_index.html
+!/server/api/logs/touch

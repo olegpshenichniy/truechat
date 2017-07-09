@@ -15,6 +15,7 @@ import '../../styles/alert.css'
 import '../../styles/auth.css'
 import '../../styles/style.css'
 import '../../styles/skin-green.css'
+import '../../styles/chat.css'
 
 import App from './app'
 
