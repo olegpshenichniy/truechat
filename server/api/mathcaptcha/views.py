@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from .serializers import CaptchaSerializer, CaptchaAnswerSerializer
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('truechat')
 
 pool = redis.ConnectionPool(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
 redis_cli = redis.Redis(connection_pool=pool)
