@@ -23,4 +23,3 @@ class UserRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
             raise PermissionDenied()
 
         return super(UserRetrieveUpdateAPIView, self).update(request, *args, **kwargs)
-

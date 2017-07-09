@@ -8,6 +8,7 @@ import Token from './token.js'
 import Auth from './auth.js'
 import Loader from './loader'
 import Alert from './alert'
+import Chat from './chat'
 
 
 
@@ -20,10 +21,11 @@ class App {
     this.alert = new Alert(this);
     this.token = new Token(this);
     this.auth = new Auth(this);
+    this.chat = new Chat(this);
 
     // body DOM
     this.body = document.getElementsByTagName("BODY")[0];
-    this.chat_wrapper = document.getElementById("chat-wrapper");
+
 
     // init axios instance
     this.axios = axios.create({
@@ -55,7 +57,7 @@ class App {
               $this._setupAxiosHeaders();
               // chat
               $this.auth.show_logoutLink();
-              $this.show_chat();
+              $this.chat.show();
             } else {
               $this.token.remove();
               // login || register
@@ -85,7 +87,7 @@ class App {
 
       $this.auth.remove_loginForm();
       $this.auth.show_logoutLink();
-      $this.show_chat();
+      $this.chat.show();
     });
 
     this._emitter.on('auth.login.fail', function (data) {
@@ -95,7 +97,7 @@ class App {
     this._emitter.on('auth.logout.success', function () {
       console.info('auth.logout.success');
 
-      $this.hide_chat();
+      $this.chat.hide();
       $this.auth.hide_logoutLink();
       $this.auth.show_loginForm();
     });
@@ -107,14 +109,6 @@ class App {
       throw 'NullTokenError'
     }
     Object.assign(this.axios.defaults, {headers: {Authorization: 'JWT ' + this.token.secret}});
-  }
-
-  show_chat() {
-    jQuery(this.chat_wrapper).removeClass('hide').hide().fadeIn(1000);
-  }
-
-  hide_chat() {
-    jQuery(this.chat_wrapper).addClass('hide');
   }
 
 }
