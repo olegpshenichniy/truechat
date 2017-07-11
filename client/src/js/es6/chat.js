@@ -1,8 +1,10 @@
 'use strict';
 
+import _ from 'underscore'
+
 import SETTINGS from './settings'
-import Utils from './utils'
 import User from './models/user'
+import PrivateThread from './models/private_thread'
 
 
 class Chat {
@@ -11,6 +13,8 @@ class Chat {
 
     this.wrapper = document.getElementById("chat-wrapper");
     this.current_user = null;
+    this.users = {};
+    this.privateThreads = {};
 
     this.renderCurrentUser = function (current_user) {
       return `<div class="pull-left image">
@@ -27,7 +31,8 @@ class Chat {
   show() {
     let $this = this;
     jQuery(this.wrapper).removeClass('hide').hide().fadeIn(1000, function () {
-      $this.displayCurrentUser();
+      $this._displayCurrentUser();
+      $this._displayPrivateThreads();
     });
   }
 
@@ -35,7 +40,11 @@ class Chat {
     jQuery(this.wrapper).addClass('hide');
   }
 
-  displayCurrentUser() {
+  hideCurrentUser() {
+    jQuery('#current-user-info').html('');
+  }
+
+  _displayCurrentUser() {
     let $this = this;
 
     // show loader
@@ -46,7 +55,11 @@ class Chat {
       function () {
         // hide loader and render current user info html
         $this.app.loader.removeSphere('current-user-info', function () {
-          $this._showCurrentUser();
+          // place html
+          jQuery($this.renderCurrentUser($this.current_user))
+            .hide()
+            .appendTo(jQuery('#current-user-info'))
+            .fadeIn();
         });
       },
       function (err) {
@@ -54,11 +67,21 @@ class Chat {
     );
   }
 
-  _showCurrentUser() {
-    jQuery(this.renderCurrentUser(this.current_user))
-      .hide()
-      .appendTo(jQuery('#current-user-info'))
-      .fadeIn();
+  _displayPrivateThreads() {
+    let $this = this;
+
+    $this.app.loader.appendSphere('direct-threads', jQuery('#direct-threads'));
+
+    // load users
+    $this._loadUsers().then(function () {
+      // load private threads
+      $this._loadPrivateThreads().then(function () {
+        $this.app.loader.removeSphere('direct-threads');
+
+        console.log($this.privateThreads);
+
+      });
+    });
   }
 
   _loadCurrentUser() {
@@ -81,7 +104,55 @@ class Chat {
       });
   }
 
+  _loadUsers() {
+    let $this = this;
 
+    // get current user info
+    return this.app.axios.get(SETTINGS.api.http.userListEndpoint)
+      .then(function (response) {
+
+        _.each(response.data, function (user) {
+          $this.users[user.id] = new User(
+            user.id,
+            user.username,
+            user.first_name,
+            user.last_name,
+            user.profile_avatar,
+            user.profile_avatar_thumbnail
+          )
+        });
+
+      })
+      .catch(function (error) {
+        throw error;
+      });
+  }
+
+  _loadPrivateThreads() {
+    let $this = this;
+
+    // get current user info
+    return this.app.axios.get(SETTINGS.api.http.privateThreadListCreateEndpoint)
+      .then(function (response) {
+        _.each(response.data, function (privateThread) {
+          let participants = {};
+
+          _.each(privateThread.participants, function (participant) {
+            participants[participant] = $this.users[participant];
+          });
+
+          $this.privateThreads[privateThread.id] = new PrivateThread(
+            privateThread.id,
+            privateThread.last_message,
+            $this.users[privateThread.initiator],
+            participants
+          )
+        });
+      })
+      .catch(function (error) {
+        throw error;
+      });
+  }
 
 }
 

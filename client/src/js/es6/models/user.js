@@ -9,6 +9,7 @@ class User {
     this.lastame = lastame;
     this.avatar = avatar;
     this.thumbnail = thumbnail;
+    this.status = null;
   }
 }
 

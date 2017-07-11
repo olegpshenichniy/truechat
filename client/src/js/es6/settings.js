@@ -9,6 +9,8 @@ const SETTINGS = {
       tokenGetEndpoint: '/token/get/',
       tokenVerifyEndpoint: '/token/verify/',
       registrationEndpoint: '/registration/',
+      userListEndpoint: '/users/',
+      privateThreadListCreateEndpoint: '/threads/private/',
     }
   }
 };
