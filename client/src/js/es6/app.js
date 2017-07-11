@@ -82,24 +82,27 @@ class App {
     let $this = this;
     this._emitter = new Emitter();
 
+    // auth.login.success
     this._emitter.on('auth.login.success', function (data) {
       console.info('auth.login.success', data);
-
+      $this._setupAxiosHeaders();
       $this.auth.remove_loginForm();
       $this.auth.show_logoutLink();
       $this.chat.show();
     });
 
+    // auth.login.fail
     this._emitter.on('auth.login.fail', function (data) {
       console.info('auth.login.fail', data);
     });
 
+    // auth.logout.success
     this._emitter.on('auth.logout.success', function () {
       console.info('auth.logout.success');
-
       $this.chat.hide();
       $this.auth.hide_logoutLink();
       $this.auth.show_loginForm();
+      $this.chat.hideCurrentUser();
     });
   }
 
