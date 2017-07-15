@@ -1,6 +1,8 @@
 from rest_framework import generics
 from rest_framework.exceptions import PermissionDenied
 
+from django.utils.timezone import datetime
+
 from .models import PrivateMessage, GroupMessage
 from .serializers import PrivateMessageListCreateSerializer, PrivateMessageRetrieveUpdateDestroySerializer
 from .serializers import GroupMessageListCreateSerializer, GroupMessageRetrieveUpdateDestroySerializer
@@ -17,6 +19,14 @@ class PrivateMessageListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return PrivateMessage.objects.filter(thread__participants=self.request.user)
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+
+        # update thread last message datetime
+        instance.thread.last_message = datetime.now()
+        instance.thread.save()
+
 
 
 class PrivateMessageRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
