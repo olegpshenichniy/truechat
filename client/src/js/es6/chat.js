@@ -12,6 +12,9 @@ class Chat {
     this.app = app;
 
     this.wrapper = document.getElementById("chat-wrapper");
+    this.current_user_container = document.getElementById("current-user-info");
+    this.current_private_thread_container = document.getElementById("private-threads-list");
+
     this.current_user = null;
     this.users = {};
     this.privateThreads = {};
@@ -24,7 +27,44 @@ class Chat {
                 <p>${current_user.username}</p>
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
               </div>`
-    }
+    };
+
+    this.renderPrivateThread = function (thread) {
+      let $this = this;
+      let interlocutor = null;
+
+      _.each(thread.participants, function (user) {
+        if (user.id !== $this.current_user.id) {
+          interlocutor = user;
+        }
+      });
+
+      return `<li>
+                <div class="user-panel">
+                  <div class="pull-left image">
+                    <img src="${interlocutor.thumbnail}" class="img-circle" alt="${interlocutor.username} Image">
+                  </div>
+                  <div class="pull-left info">
+                    <p>${interlocutor.username}</p>
+                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                  </div>
+                </div>
+              </li>`
+    };
+
+    this.renderUserAsPrivateThread = function (user) {
+      return `<li>
+                <div class="user-panel">
+                  <div class="pull-left image">
+                    <img src="${user.thumbnail}" class="img-circle" alt="${user.username} Image">
+                  </div>
+                  <div class="pull-left info">
+                    <p>${user.username}</p>
+                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                  </div>
+                </div>
+              </li>`
+    };
 
   }
 
@@ -41,14 +81,14 @@ class Chat {
   }
 
   hideCurrentUser() {
-    jQuery('#current-user-info').html('');
+    jQuery(this.current_user_container).html('');
   }
 
   _displayCurrentUser() {
     let $this = this;
 
     // show loader
-    $this.app.loader.appendSphere('current-user-info', jQuery('#current-user-info'));
+    $this.app.loader.appendSphere('current-user-info', jQuery($this.current_user_container));
 
     // load current user info
     $this._loadCurrentUser().then(
@@ -58,7 +98,7 @@ class Chat {
           // place html
           jQuery($this.renderCurrentUser($this.current_user))
             .hide()
-            .appendTo(jQuery('#current-user-info'))
+            .appendTo(jQuery($this.current_user_container))
             .fadeIn();
         });
       },
@@ -76,12 +116,60 @@ class Chat {
     $this._loadUsers().then(function () {
       // load private threads
       $this._loadPrivateThreads().then(function () {
-        $this.app.loader.removeSphere('direct-threads');
-
-        console.log($this.privateThreads);
-
+        $this.app.loader.removeSphere('direct-threads', function () {
+          // merge and render threads and users
+          render()
+        });
       });
     });
+
+    function render() {
+      let threads = [];
+      let usersToExclude = new Set();
+
+      // add private threads
+      _.each($this.privateThreads, function (thread) {
+        // we will exclude this users later
+        _.each(thread.participants, function (user) {
+          usersToExclude = usersToExclude.add(user.id);
+        });
+
+        threads.push(thread);
+      });
+
+      // sort private threads by last_message
+      threads = _.sortBy(threads, 'lastMessage').reverse();
+
+      // add users (future threads)
+      _.each($this.users, function (user) {
+        // if we don't have private thread with this user
+        if (!usersToExclude.has(user.id)) {
+          threads.push(user);
+        }
+      });
+
+      _.each(threads, function (thread) {
+
+        switch (thread.constructor.name) {
+          case 'PrivateThread':
+            // render thread
+            jQuery($this.renderPrivateThread(thread))
+              .hide()
+              .appendTo(jQuery($this.current_private_thread_container))
+              .fadeIn();
+            break;
+          case 'User':
+            // render user
+            jQuery($this.renderUserAsPrivateThread(thread))
+              .hide()
+              .appendTo(jQuery($this.current_private_thread_container))
+              .fadeIn();
+            break;
+            break;
+        }
+      })
+
+    }
   }
 
   _loadCurrentUser() {
