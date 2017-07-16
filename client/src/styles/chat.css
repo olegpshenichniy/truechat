@@ -1,5 +1,46 @@
 .user-panel .chat-loader-local,
-.sidebar-menu .chat-loader-local{
+.sidebar-menu .chat-loader-local {
     left: 50%;
     margin-left: -25px;
+}
+
+#private-threads-list li div.thread-info {
+    color: #bfbfbf;
+    padding: 5px 5px 5px 15px;
+    line-height: 1;
+    position: absolute;
+    left: 55px;
+}
+
+#private-threads-list li {
+    cursor: pointer;
+}
+
+#private-threads-list li:hover {
+    background-color: #222d32;
+}
+
+#chat-box-dark {
+    background-color: #222d32;
+    border-top: 0;
+    color: #bfbfbf;
+}
+
+#chat-box-dark .box-header{
+    color: #bfbfbf;
+}
+
+#chat-box-dark .box-footer{
+    background-color: #222d32;
+    border-top: 0;
+}
+
+#chat-box-dark .box-footer .input-group input {
+    background-color: #374850;
+    border: 0;
+    color: #e8e8e8 !important;
+}
+
+#chat-box-dark .chat .item>.attachment{
+    background-color: #374850;
 }
