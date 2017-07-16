@@ -59,7 +59,7 @@ class Chat {
                   <div class="pull-left image">
                     <img src="${user.thumbnail}" class="img-circle" alt="${user.username} Image">
                   </div>
-                  <div class="pull-left info">
+                  <div class="pull-left thread-info">
                     <p>${user.username}</p>
                     <small><i class="fa fa-circle text-success"></i> Online</small>
                   </div>
