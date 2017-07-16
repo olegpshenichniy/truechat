@@ -39,28 +39,29 @@ class Chat {
         }
       });
 
-      return `<li>
+      return `<li id="private_thread_${thread.id}">
                 <div class="user-panel">
                   <div class="pull-left image">
                     <img src="${interlocutor.thumbnail}" class="img-circle" alt="${interlocutor.username} Image">
                   </div>
-                  <div class="pull-left info">
+                  <div class="pull-left thread-info">
                     <p>${interlocutor.username}</p>
-                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    <small><i class="fa fa-circle text-success"></i> Online</small>
                   </div>
                 </div>
               </li>`
     };
 
     this.renderUserAsPrivateThread = function (user) {
-      return `<li>
+
+      return `<li id="user_private_thread_${user.id}">
                 <div class="user-panel">
                   <div class="pull-left image">
                     <img src="${user.thumbnail}" class="img-circle" alt="${user.username} Image">
                   </div>
                   <div class="pull-left info">
                     <p>${user.username}</p>
-                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    <small><i class="fa fa-circle text-success"></i> Online</small>
                   </div>
                 </div>
               </li>`

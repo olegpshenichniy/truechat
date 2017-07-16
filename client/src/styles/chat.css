@@ -1,5 +1,21 @@
 .user-panel .chat-loader-local,
-.sidebar-menu .chat-loader-local{
+.sidebar-menu .chat-loader-local {
     left: 50%;
     margin-left: -25px;
+}
+
+#private-threads-list li div.thread-info {
+    color: #fff;
+    padding: 5px 5px 5px 15px;
+    line-height: 1;
+    position: absolute;
+    left: 55px;
+}
+
+#private-threads-list li {
+    cursor: pointer;
+}
+
+#private-threads-list li:hover {
+    background-color: #222d32;
 }
