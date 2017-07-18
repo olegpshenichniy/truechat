@@ -102,7 +102,7 @@ class App {
       $this.chat.hide();
       $this.auth.hide_logoutLink();
       $this.auth.show_loginForm();
-      $this.chat.hideCurrentUser();
+      $this.chat.hookLogout();
     });
   }
 

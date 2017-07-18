@@ -14,8 +14,6 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('username', 'chat_name', 'email', 'first_name', 'last_name', 'is_staff')
     list_filter = ('is_staff', 'chat_name', 'is_superuser', 'is_active', 'groups')
     search_fields = ('username', 'chat_name', 'first_name', 'last_name', 'email')
-
-
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'chat_name')}),

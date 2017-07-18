@@ -81,8 +81,13 @@ class Chat {
     jQuery(this.wrapper).addClass('hide');
   }
 
-  hideCurrentUser() {
+  hookLogout() {
+    this.current_user = null;
+    this.users = {};
+    this.privateThreads = {};
+
     jQuery(this.current_user_container).html('');
+    jQuery(this.current_private_thread_container).html('');
   }
 
   _displayCurrentUser() {
@@ -137,6 +142,9 @@ class Chat {
 
         threads.push(thread);
       });
+
+      // current user as well
+      usersToExclude = usersToExclude.add($this.current_user.id);
 
       // sort private threads by last_message
       threads = _.sortBy(threads, 'lastMessage').reverse();
