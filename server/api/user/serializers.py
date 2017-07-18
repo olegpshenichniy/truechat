@@ -15,7 +15,7 @@ class UserListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'profile_avatar', 'profile_avatar_thumbnail')
+        fields = ('id', 'chat_name', 'first_name', 'last_name', 'profile_avatar', 'profile_avatar_thumbnail')
 
     def get_profile_avatar(self, obj):
         try:
@@ -35,7 +35,7 @@ class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'profile')
+        fields = ('id', 'chat_name', 'email', 'first_name', 'last_name', 'profile')
 
 
     def update(self, instance, validated_data):
@@ -68,6 +68,5 @@ class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.save()
-
 
         return instance

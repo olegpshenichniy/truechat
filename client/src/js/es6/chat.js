@@ -24,7 +24,7 @@ class Chat {
                 <img src="${current_user.thumbnail}" class="img-circle" alt="User Image">
               </div>
               <div class="pull-left info">
-                <p>${current_user.username}</p>
+                <p>${current_user.chatName}</p>
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
               </div>`
     };
@@ -42,10 +42,10 @@ class Chat {
       return `<li id="private_thread_${thread.id}">
                 <div class="user-panel">
                   <div class="pull-left image">
-                    <img src="${interlocutor.thumbnail}" class="img-circle" alt="${interlocutor.username} Image">
+                    <img src="${interlocutor.thumbnail}" class="img-circle" alt="${interlocutor.chatName} Image">
                   </div>
                   <div class="pull-left thread-info">
-                    <p>${interlocutor.username}</p>
+                    <p>${interlocutor.chatName}</p>
                     <small><i class="fa fa-circle text-success"></i> Online</small>
                   </div>
                 </div>
@@ -57,10 +57,10 @@ class Chat {
       return `<li id="user_private_thread_${user.id}">
                 <div class="user-panel">
                   <div class="pull-left image">
-                    <img src="${user.thumbnail}" class="img-circle" alt="${user.username} Image">
+                    <img src="${user.thumbnail}" class="img-circle" alt="${user.chatName} Image">
                   </div>
                   <div class="pull-left thread-info">
-                    <p>${user.username}</p>
+                    <p>${user.chatName}</p>
                     <small><i class="fa fa-circle text-success"></i> Online</small>
                   </div>
                 </div>
@@ -81,8 +81,13 @@ class Chat {
     jQuery(this.wrapper).addClass('hide');
   }
 
-  hideCurrentUser() {
+  hookLogout() {
+    this.current_user = null;
+    this.users = {};
+    this.privateThreads = {};
+
     jQuery(this.current_user_container).html('');
+    jQuery(this.current_private_thread_container).html('');
   }
 
   _displayCurrentUser() {
@@ -138,6 +143,9 @@ class Chat {
         threads.push(thread);
       });
 
+      // current user as well
+      usersToExclude = usersToExclude.add($this.current_user.id);
+
       // sort private threads by last_message
       threads = _.sortBy(threads, 'lastMessage').reverse();
 
@@ -181,7 +189,7 @@ class Chat {
       .then(function (response) {
         $this.current_user = new User(
           response.data.current_user.id,
-          response.data.current_user.username,
+          response.data.current_user.chat_name,
           response.data.current_user.first_name,
           response.data.current_user.last_name,
           response.data.current_user.profile_avatar,
@@ -203,7 +211,7 @@ class Chat {
         _.each(response.data, function (user) {
           $this.users[user.id] = new User(
             user.id,
-            user.username,
+            user.chat_name,
             user.first_name,
             user.last_name,
             user.profile_avatar,

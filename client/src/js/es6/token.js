@@ -43,9 +43,9 @@ class Token {
       });
   }
 
-  requestSecret(username, password) {
+  requestSecret(email, password) {
     let params = new URLSearchParams();
-    params.append('username', username);
+    params.append('email', email);
     params.append('password', password);
 
     return this.app.axios.post(
