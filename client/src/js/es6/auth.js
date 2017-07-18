@@ -22,7 +22,7 @@ class Auth {
                                   <p class="login-box-msg">Start your session</p>
                                   <form id="chat-login">
                                     <div class="form-group has-feedback">
-                                      <input name="username" type="text" class="form-control" placeholder="Username">
+                                      <input name="email" type="text" class="form-control" placeholder="Email">
                                       <span class="form-control-feedback"></span>
                                     </div>
                                     <div class="form-group has-feedback">
@@ -53,7 +53,7 @@ class Auth {
                                   <p class="login-box-msg">Create account</p>
                                   <form id="chat-register">
                                     <div class="form-group has-feedback">
-                                      <input name="username" type="text" class="form-control" placeholder="Username">
+                                      <input name="chat_name" type="text" class="form-control" placeholder="Nickname">
                                       <span class="form-control-feedback"></span>
                                     </div>
                                     <div class="form-group has-feedback">
@@ -127,13 +127,13 @@ class Auth {
       }, {});
 
       // send xhr and handle deffered
-      $this.app.token.requestSecret(formData.username, formData.password).then(
+      $this.app.token.requestSecret(formData.email, formData.password).then(
         function (token) {
           // hide button loader and execute callback
           $this.app.loader.stopAnimateButton('login', function () {
             $this.app.token.secret = token;
             $this.app.token.setup();
-            $this.app._emitter.emit('auth.login.success', formData.username);
+            $this.app._emitter.emit('auth.login.success', formData.email);
           });
         },
         // error
@@ -188,7 +188,7 @@ class Auth {
       }, {});
 
       // send xhr and handle deffered
-      $this._register(formData.username, formData.email, formData.password, formData.password_repeat).then(
+      $this._register(formData.chat_name, formData.email, formData.password, formData.password_repeat).then(
         function (_) {
           $this.app.loader.stopAnimateButton('login', function () {
             alert('created');
@@ -227,10 +227,10 @@ class Auth {
     this.app._emitter.emit('auth.logout.success')
   }
 
-  _register(username, email, password, passwordRepeat) {
+  _register(chatName, email, password, passwordRepeat) {
 
     let params = new URLSearchParams();
-    params.append('username', username);
+    params.append('chat_name', chatName);
     params.append('password', password);
     params.append('password_repeat', passwordRepeat);
     params.append('email', email);

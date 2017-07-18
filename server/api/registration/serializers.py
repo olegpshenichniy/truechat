@@ -18,7 +18,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'password_repeat')
+        fields = ('id', 'chat_name', 'email', 'password', 'password_repeat')
 
     def validate_password(self, password):
         password_validation.validate_password(password=password)
@@ -35,6 +35,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {'password_repeat': e.messages[0]}
             )
+
+        # generate username
+        attrs['username'] = attrs['email'].replace('@', '_')
+
         return attrs
 
     def create(self, validated_data):

@@ -11,7 +11,6 @@ import Alert from './alert'
 import Chat from './chat'
 
 
-
 class App {
   constructor() {
     // event emitter

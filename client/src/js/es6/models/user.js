@@ -2,9 +2,9 @@
 
 
 class User {
-  constructor(id, username, firstname, lastame, avatar, thumbnail) {
+  constructor(id, chatName, firstname, lastame, avatar, thumbnail) {
     this.id = id;
-    this.username = username;
+    this.chatName = chatName;
     this.firstname = firstname;
     this.lastame = lastame;
     this.avatar = avatar;
