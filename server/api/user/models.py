@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class User(AbstractUser):
+    chat_name = models.CharField(_('chat name'), max_length=60, blank=False, null=False)
     email = models.EmailField(_('email address'), blank=False, null=False, unique=True)
 
     @property
