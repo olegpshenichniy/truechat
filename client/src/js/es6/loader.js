@@ -62,7 +62,7 @@ class Loader {
   }
 
   removeSphere(key, callback = false) {
-    this._loaders['sphere-' + key].fadeOut(900, function () {
+    this._loaders['sphere-' + key].fadeOut(600, function () {
       jQuery(this).remove();
 
       if (callback) {

@@ -7,6 +7,7 @@ class PrivateThread {
     this.lastMessage = new Date(lastMessage);
     this.initiator = initiator;
     this.participants = participants;
+    this.messages = [];
   }
 }
 

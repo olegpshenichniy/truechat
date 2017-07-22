@@ -11,6 +11,9 @@ const SETTINGS = {
       registrationEndpoint: '/registration/',
       userListEndpoint: '/users/',
       privateThreadListCreateEndpoint: '/threads/private/',
+      groupThreadListCreateEndpoint: '/threads/group/',
+      privateMessageListCreateEndpoint: '/messages/private/',
+      groupMessagesListCreateEndpoint: '/messages/group/',
     }
   }
 };

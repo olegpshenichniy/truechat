@@ -5,6 +5,7 @@ import _ from 'underscore'
 import SETTINGS from './settings'
 import User from './models/user'
 import PrivateThread from './models/private_thread'
+import Message from './models/message'
 
 
 class Chat {
@@ -12,8 +13,11 @@ class Chat {
     this.app = app;
 
     this.wrapper = document.getElementById("chat-wrapper");
+    this.chat_box = document.getElementById("chat-box");
     this.current_user_container = document.getElementById("current-user-info");
     this.current_private_thread_container = document.getElementById("private-threads-list");
+    this.chat_text_input = document.getElementById("chat-text-input");
+    this.chat_file_input = document.getElementById("chat-file-input");
 
     this.current_user = null;
     this.users = {};
@@ -39,14 +43,14 @@ class Chat {
         }
       });
 
-      return `<li id="private_thread_${thread.id}">
+      return `<li id="private_thread_${thread.id}" class="user-to-private-thread">
                 <div class="user-panel">
                   <div class="pull-left image">
                     <img src="${interlocutor.thumbnail}" class="img-circle" alt="${interlocutor.chatName} Image">
                   </div>
                   <div class="pull-left thread-info">
                     <p>${interlocutor.chatName}</p>
-                    <small><i class="fa fa-circle text-success"></i> Online</small>
+                    <!--<small><i class="fa fa-circle text-success"></i> Online</small>-->
                   </div>
                 </div>
               </li>`
@@ -54,17 +58,35 @@ class Chat {
 
     this.renderUserAsPrivateThread = function (user) {
 
-      return `<li id="user_private_thread_${user.id}">
+      return `<li id="user_private_thread_${user.id}" class="user-to-private-thread">
                 <div class="user-panel">
                   <div class="pull-left image">
                     <img src="${user.thumbnail}" class="img-circle" alt="${user.chatName} Image">
                   </div>
                   <div class="pull-left thread-info">
                     <p>${user.chatName}</p>
-                    <small><i class="fa fa-circle text-success"></i> Online</small>
+                    <!--<small><i class="fa fa-circle text-success"></i> Online</small>-->
                   </div>
                 </div>
               </li>`
+    };
+
+
+    this.renderMessage = function (message) {
+
+      return `<!-- chat item -->
+              <div class="item" id="private_thread_message_${message.id}">
+                <img src="${message.sender.thumbnail}" alt="user image" class="online">
+
+                <p class="message">
+                  <a href="#" class="name">
+                    <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> ${message.datetime}</small>
+                    ${message.sender.chatName}
+                  </a>
+                  ${message.text}
+                </p>
+              </div>
+              <!-- /.item -->`
     };
 
   }
@@ -124,12 +146,12 @@ class Chat {
       $this._loadPrivateThreads().then(function () {
         $this.app.loader.removeSphere('direct-threads', function () {
           // merge and render threads and users
-          render()
+          _renderThreads()
         });
       });
     });
 
-    function render() {
+    function _renderThreads() {
       let threads = [];
       let usersToExclude = new Set();
 
@@ -166,6 +188,16 @@ class Chat {
               .hide()
               .appendTo(jQuery($this.current_private_thread_container))
               .fadeIn();
+
+            // add onclick handler
+            jQuery('#private_thread_' + thread.id).on('click', function () {
+              jQuery('.selected-chat').removeClass('selected-chat');
+              jQuery(this).addClass('selected-chat');
+              jQuery($this.chat_box).html('');
+              // load and display messages
+              $this._displayPrivateThreadMessages(thread);
+            });
+
             break;
           case 'User':
             // render user
@@ -174,9 +206,8 @@ class Chat {
               .appendTo(jQuery($this.current_private_thread_container))
               .fadeIn();
             break;
-            break;
         }
-      })
+      });
 
     }
   }
@@ -249,6 +280,64 @@ class Chat {
       .catch(function (error) {
         throw error;
       });
+  }
+
+  _displayPrivateThreadMessages(thread) {
+    let $this = this;
+
+    $this.app.loader.appendSphere('load-messages', jQuery('#chat-box'));
+
+    $this._loadPrivateThreadMessages(thread).then(function () {
+      $this.app.loader.removeSphere('load-messages', function () {
+        // enable input and button
+        jQuery($this.chat_text_input).removeAttr('disabled');
+        jQuery($this.chat_file_input).removeClass('disabled');
+
+        $this._renderMessages(thread);
+      });
+    });
+  }
+
+  _loadPrivateThreadMessages(thread) {
+    let $this = this;
+
+    // get direct messages
+    return this.app.axios.get(SETTINGS.api.http.privateMessageListCreateEndpoint,
+      {
+        params: {
+          thread: thread.id
+        }
+      })
+      .then(function (response) {
+        $this.privateThreads[thread.id].messages = [];
+
+        _.each(response.data, function (message) {
+          $this.privateThreads[thread.id].messages.push(
+            new Message(
+              message.id,
+              message.datetime,
+              $this.users[message.sender],
+              message.text
+            )
+          )
+        });
+      })
+      .catch(function (error) {
+        throw error;
+      });
+  }
+
+  _renderMessages(thread) {
+    let $this = this;
+
+    _.each(thread.messages, function (message) {
+      jQuery($this.renderMessage(message))
+        .hide()
+        .appendTo(jQuery($this.chat_box))
+        .fadeIn();
+    });
+
+
   }
 
 }
