@@ -8,6 +8,7 @@ class PrivateThread {
     this.initiator = initiator;
     this.participants = participants;
     this.messages = [];
+    this.temp_text = '';
   }
 }
 

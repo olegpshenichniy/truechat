@@ -22,6 +22,7 @@ class Chat {
     this.current_user = null;
     this.users = {};
     this.privateThreads = {};
+    this.activeThread = null;
 
     this.renderCurrentUser = function (current_user) {
       return `<div class="pull-left image">
@@ -321,11 +322,17 @@ class Chat {
 
       // add onclick handler
       jQuery('#private_thread_' + thread.id).on('click', function () {
+        if ($this.activeThread) {
+          $this.activeThread.temp_text = $this.chat_text_input.value;
+          $this.chat_text_input.value = '';
+        }
         jQuery('.selected-chat').removeClass('selected-chat');
         jQuery(this).addClass('selected-chat');
         jQuery($this.chat_box).html('');
         // load and display messages
+        $this.activeThread = thread;
         $this._displayPrivateThreadMessages(thread);
+        $this.chat_text_input.value = thread.temp_text;
       });
     }
 
