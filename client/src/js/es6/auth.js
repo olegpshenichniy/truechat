@@ -114,6 +114,7 @@ class Auth {
     $this._registerButton.click(function () {
       $this.remove_loginForm();
       $this.show_registerForm();
+      $this.app.state = 'register';
     });
 
     $this._loginButton.click(function (e) {
@@ -175,6 +176,7 @@ class Auth {
     $this._loginButton.click(function () {
       $this.remove_registerForm();
       $this.show_loginForm();
+      $this.app.state = 'login';
     });
 
     $this._registerButton.click(function () {

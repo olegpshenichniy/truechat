@@ -13,6 +13,7 @@ import Chat from './chat'
 
 class App {
   constructor() {
+    this.state = null; // login, register, chat
     // event emitter
     this._emitter = null;
 
@@ -24,7 +25,6 @@ class App {
 
     // body DOM
     this.body = document.getElementsByTagName("BODY")[0];
-
 
     // init axios instance
     this.axios = axios.create({
@@ -42,6 +42,9 @@ class App {
     // subscribe to all events
     this._subscribeOnEvents();
 
+    // bind keys
+    this._addKeypressHandlers();
+
     // setup token if it exists in cookie
     this.token.setup();
 
@@ -57,10 +60,12 @@ class App {
               // chat
               $this.auth.show_logoutLink();
               $this.chat.show();
+              $this.state = 'chat';
             } else {
               $this.token.remove();
               // login || register
               $this.auth.show_loginForm();
+              $this.state = 'login';
             }
           });
         },
@@ -73,6 +78,7 @@ class App {
       // login || register
       this.loader.removeGlobalSphere(function () {
         $this.auth.show_loginForm();
+        $this.state = 'login';
       });
     }
   }
@@ -88,6 +94,7 @@ class App {
       $this.auth.remove_loginForm();
       $this.auth.show_logoutLink();
       $this.chat.show();
+      $this.state = 'chat';
     });
 
     // auth.login.fail
@@ -102,6 +109,26 @@ class App {
       $this.auth.hide_logoutLink();
       $this.auth.show_loginForm();
       $this.chat.hookLogout();
+      $this.state = 'login';
+    });
+  }
+
+  _addKeypressHandlers() {
+    let $this = this;
+    jQuery(document).bind('keypress', function (pressed) {
+      if (pressed.keyCode === 13) {
+        switch ($this.state) {
+          case 'login':
+            jQuery('#chat-login-button').click();
+            break;
+          case 'register':
+            jQuery('#chat-register-button').click();
+            break;
+          case 'chat':
+            $this.chat.sendMessage();
+            break;
+        }
+      }
     });
   }
 
