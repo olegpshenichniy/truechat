@@ -105,9 +105,8 @@ class App {
     // auth.logout.success
     this._emitter.on('auth.logout.success', function () {
       console.info('auth.logout.success');
-      $this.chat.hide();
-      $this.auth.hide_logoutLink();
-      $this.auth.show_loginForm();
+      $this.hookLogout();
+      $this.auth.hookLogout();
       $this.chat.hookLogout();
       $this.state = 'login';
     });
@@ -138,6 +137,10 @@ class App {
       throw 'NullTokenError'
     }
     Object.assign(this.axios.defaults, {headers: {Authorization: 'JWT ' + this.token.secret}});
+  }
+
+  hookLogout() {
+    jQuery('aside.control-sidebar').removeClass('control-sidebar-open');
   }
 
 }

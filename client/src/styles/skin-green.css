@@ -129,3 +129,14 @@
   border-bottom-right-radius: 2px;
   border-bottom-left-radius: 0;
 }
+.text-muted {
+  color: #314148;
+}
+a {
+  color: #465d67;
+}
+a:hover, a:active, a:focus {
+  outline: none;
+  text-decoration: none;
+  color: #008d4c;
+}

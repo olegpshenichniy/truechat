@@ -86,6 +86,11 @@ class Auth {
 
   }
 
+  hookLogout() {
+    this.hide_logoutLink();
+    this.show_loginForm();
+  }
+
   show_logoutLink() {
     let $this = this;
 

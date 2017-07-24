@@ -61,10 +61,10 @@ class Chat {
 
       return `<!-- chat item -->
               <div class="item" id="private_thread_message_${message.id}">
-                <img src="${message.sender.thumbnail}" alt="user image" class="online">
+                <img src="${message.sender.thumbnail}" alt="user image" class="online-offline">
 
                 <p class="message">
-                  <a href="#" class="name">
+                  <a class="name" href="javascript:void(0)">
                     <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> ${message.datetime}</small>
                     ${message.sender.chatName}
                   </a>
@@ -84,21 +84,79 @@ class Chat {
     });
   }
 
-  hide() {
-    jQuery(this.wrapper).addClass('hide');
-  }
-
   hookLogout() {
     this.current_user = null;
     this.users = {};
     this.privateThreads = {};
+    this.activeThread = null;
+    this._cleanMessages();
 
     jQuery(this.current_user_container).html('');
     jQuery(this.private_thread_container).html('');
+    jQuery(this.wrapper).addClass('hide');
   }
 
   sendMessage() {
+    let $this = this;
+    let text = $this.chat_text_input.value.trim();
+    
+    if (text && $this.activeThread) {
 
+      let params = new URLSearchParams();
+      params.append('text', text);
+      params.append('thread', $this.activeThread.id);
+
+      // clean form
+      $this.chat_text_input.value = '';
+      $this.activeThread.temp_text = '';
+      
+      // TODO implement queue of messages for sending
+      return this.app.axios.post(
+        SETTINGS.api.http.privateMessageListCreateEndpoint,
+        params)
+        .then(function (response) {
+          if (response.status === 201) {
+            // mk msg
+            let msg = new Message(
+              response.data.id,
+              response.data.datetime,
+              $this.users[response.data.sender],
+              response.data.text
+            );
+            // add msg to thread
+            $this.activeThread.messages.push(msg);
+            $this.activeThread.lastMessage = response.data.datetime;
+            // render it
+            jQuery($this.renderMessage(msg))
+              .appendTo(jQuery($this.chat_box));
+
+            $this._scrollChatBoxBottom();
+
+            // TODO reorder threads
+            // // TODO remove this horrible shit
+            // jQuery($this.private_thread_container).html('');
+            // $this._renderThreads();
+
+
+            return true;
+          }
+          throw response;
+        })
+        .catch(function (error) {
+          console.log('catch', error.response);
+          throw error;
+        });
+
+    }
+    
+  }
+
+  _scrollChatBoxBottom() {
+    this.chat_box.scrollTop = this.chat_box.scrollHeight;
+  }
+
+  _changeChatBoxTitle(title) {
+    jQuery('.box-title').html(title);
   }
 
   _displayCurrentUser() {
@@ -266,6 +324,8 @@ class Chat {
 
     // add focus
     $this.chat_text_input.focus();
+    // scroll down
+    $this._scrollChatBoxBottom();
 
   }
 
@@ -302,38 +362,59 @@ class Chat {
 
       switch (thread.constructor.name) {
         case 'PrivateThread':
-          renderPrivateThread(thread);
+          render(thread);
           break;
         case 'User':
           // create thread from user and render it
           $this._createPrivateThread(thread).then(function (thread) {
-            renderPrivateThread(thread);
+            render(thread);
           });
           break;
       }
+
     });
 
-    function renderPrivateThread(thread) {
+    function render(thread) {
       // render thread
       jQuery($this.renderPrivateThread(thread))
         .hide()
         .appendTo(jQuery($this.private_thread_container))
         .fadeIn();
 
+      let $thread = jQuery('#private_thread_' + thread.id);
+
       // add onclick handler
-      jQuery('#private_thread_' + thread.id).on('click', function () {
+      $thread.on('click', function () {
+        // temp text
         if ($this.activeThread) {
           $this.activeThread.temp_text = $this.chat_text_input.value;
           $this.chat_text_input.value = '';
         }
+
+        // mark with class
         jQuery('.selected-chat').removeClass('selected-chat');
         jQuery(this).addClass('selected-chat');
-        jQuery($this.chat_box).html('');
+
+        // remove old messages
+        $this._cleanMessages();
+
+        // change chat title
+        _.each(thread.participants, function (user) {
+          if (user.id !== $this.current_user.id) {
+            $this._changeChatBoxTitle('Direct with ' + user.chatName);
+          }
+        });
+
         // load and display messages
         $this.activeThread = thread;
         $this._displayPrivateThreadMessages(thread);
         $this.chat_text_input.value = thread.temp_text;
       });
+
+      // activate 1st thread
+      if (!$this.activeThread) {
+        $thread.click();
+      }
     }
 
   }
@@ -370,6 +451,10 @@ class Chat {
         console.log('catch', error.response);
         throw error;
       });
+  }
+
+  _cleanMessages() {
+    jQuery(this.chat_box).html('');
   }
 
 }
